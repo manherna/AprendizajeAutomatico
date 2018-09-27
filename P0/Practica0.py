@@ -7,6 +7,8 @@ import random as rnd
 import matplotlib as mp
 import matplotlib.pyplot as plt
 import numpy as np
+import scipy as sp
+import scipy.integrate as integ
 
 
 def integra_mc (fun, a, b, num_puntos = 1000):
@@ -30,14 +32,20 @@ def integra_mc (fun, a, b, num_puntos = 1000):
     xx = np.array([rnd.randint(0, b) for n in range(0, num_puntos)])
     yy = np.array([rnd.randint(0, maxy) for n in range(0, num_puntos)])
 
-    under = 0
-    above = 0.0
+    under = 0.0
 
+    # Sumamos todos los puntos por debajo de la función
     for x in xx:
-        if (yy[np.where(xx == x)[0][0]] < func(x)):
+        if (yy[np.where(xx == x)[0][0]] <= func(x)):
             under = under+1
 
+
     print (under)
+    
+    integral = float(under / num_puntos)*(b-a)*maxy
+    print (integral)
+    print (integ.quad(fun, a, b))
+    
 
     plt.figure()
     plt.plot(p_x, p_y, '-')
