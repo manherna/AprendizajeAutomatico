@@ -1,10 +1,13 @@
+# coding=utf-8 #Para que no de fallos de caracteres no-ASCII
 # Practica 0 de AAMD
 # Implementación en python de la integración por el metodo 
 # de Monte Carlo
+
 import random as rnd
 import matplotlib as mp
 import matplotlib.pyplot as plt
 import numpy as np
+
 
 def integra_mc (fun, a, b, num_puntos = 1000):
     # Randomizar una lista con 1000 puntos en el segmento a, b 
