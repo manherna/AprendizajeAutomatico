@@ -16,24 +16,39 @@ import time
 def integra_mc (fun, a, b, num_puntos = 10000):
    
     under = 0.0
+
+    maxy = p_y[0]
+    miny = p_y[0]
+
+    for i in range (0, len(p_y)):
+        if p_y[i] < miny:
+            miny = p_y[i]
+        elif p_y[i] > maxy:
+            maxy = p_y[i]
     
     xx = np.array([rnd.uniform(a, float(b)) for n in range(0, num_puntos)])
     yy = np.array([rnd.uniform(miny, maxy) for n in range(0, num_puntos)])
 
     # Sumamos todos los puntos por debajo de la función
+    i = 0
     for x in xx:
-        if (yy[np.where(xx == x)[0][0]] < fun(x)):
-            under = under+1
+        if(yy[i] < fun(xx[i])):
+            under = under +1
+        i = i+1
 
     return float(under / num_puntos)*(b-a)*maxy
 
 def integra_mc_vector(fun, a, b, num_puntos = 10000):
 
     under = 0.0
+
+    maxy = max(p_y)
+    miny = min(p_y)
+
     xx = np.array([rnd.uniform(a, float(b)) for n in range(0, num_puntos)])
     yy = np.array([rnd.uniform(miny, maxy) for n in range(0, num_puntos)])
-
-    under = sum (1 for x in xx if fun(x) >= yy[np.where(xx == x)[0][0]])
+    i = 0
+    under = sum (1 for x in range(0, len(xx)) if fun(xx[x]) >= yy[x])
 
     return float(under / num_puntos)*(b-a)*maxy
 
@@ -48,7 +63,8 @@ def calctiempo(func,integ, nump):
 #funcion a integrar
 def foo(x):
     #return -np.power(float(x), 2)+100
-    return -np.power(float(x-100),2) + 10000
+    #return -np.power(float(x-100),2) + 10000
+    return x**2
 
 
 
@@ -67,14 +83,11 @@ p_x = []
 p_x = np.linspace(a,b, 10000)
 p_y = np.array([fun(n) for n in p_x ])
 
-maxy = max(p_y)
-miny = min(p_y)
-
 
 
 #Arrays para la representación de optimización
 valtemps=[]
-numpunts=np.linspace(100, 1000, 1000)
+numpunts=np.linspace(100, 100000, 100)
 inte = []
 intevec = []
 
