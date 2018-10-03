@@ -40,14 +40,15 @@ def integra_mc_vector(fun, a, b, num_puntos = 10000):
 #Función para calcular el tiempo de ejecucion de func
 def calctiempo(func,integ, nump):
     tic = time.process_time()
-    integ.append(func(foo, a, b, int(nump)))
+    temp =  func(foo, a, b, int(nump))
     toc = time.process_time()
+    integ.append(temp)
     return toc - tic
 
 #funcion a integrar
 def foo(x):
-    return -np.power(float(x), 2)+100
-    #return -np.power(float(x-100),2) + 10000
+    #return -np.power(float(x), 2)+100
+    return -np.power(float(x-100),2) + 10000
 
 
 
@@ -84,7 +85,7 @@ valtemps = np.array([calctiempo (integra_mc, inte, x) for x in numpunts])
 valtempsvec = np.array([calctiempo (integra_mc_vector, intevec, x) for x in numpunts])
 
 
-print(inte)
+print(realinte)
 
 
 #Pintado de resultados
