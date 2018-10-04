@@ -46,19 +46,20 @@ def integra_mc_vector(fun, a, b, num_puntos = 10000):
     maxy = max(p_y)
     miny = min(p_y)
 
-    xx = np.array([rnd.uniform(a, float(b)) for n in range(0, num_puntos)])
-    yy = np.array([rnd.uniform(miny, maxy) for n in range(0, num_puntos)])
+    xx = np.random.uniform (a, b, num_puntos)
+    yy = np.random.uniform (miny, maxy, num_puntos)
+    aux = yy < fun(xx)
     
-    under = sum (1 for x in range(0, len(xx)) if fun(xx[x]) >= yy[x])
+    under = sum (aux)
 
     return float(under / num_puntos)*(b-a)*maxy
 
 #Función para calcular el tiempo de ejecucion de func
-def calctiempo(func,integ, nump):
+def calctiempo(func,integr, nump):
     tic = time.process_time()
     temp =  func(foo, a, b, int(nump))
     toc = time.process_time()
-    integ.append(temp)
+    integr.append(temp)
     return toc - tic
 
 #funcion a integrar
