@@ -23,27 +23,27 @@ def calctiempo(func, tiempos, nump):
 
 #Calcula la función de coste mediante theta, el numero de muestras
 #los vectores de puntos y la función de hipótesis
-def funCoste(muestras, vecX, vecY, fHipo, theta):
-    #return sum(((fHipo(theta,vecX)-vecY)**2))/2.0*muestras
+def funCoste(theta):
+    #return sum(((fHipo(theta,vectorX)-vectorY)**2))/2.0*muestras  #Pa vectorizar
     acum = 0.0 #Sumatorio
     for i in range(0, muestras):
-        acum = acum + (fHipo(theta, vecX[i])-vecY[i])**2
+        acum = acum + (hipo1v(theta, vectorX[i])-vectorY[i])**2
     
-    return acum/2.0*muestras
+    return acum/2.0*len(vectorX)
 
 # Funcion de coste con dos variables
-def funCoste2(muestras, vecX, vecY, fHipo, theta0, theta1):
-    #return sum(((fHipo(theta,vecX)-vecY)**2))/2.0*muestras
+def funCoste2(theta0, theta1):
+    #return sum(((fHipo(theta,vectorX)-vectorY)**2))/2.0*muestras
     acum = 0.0 #Sumatorio
     for i in range(0, muestras):
-        acum = acum + (fHipo(theta0, theta1, vecX[i])-vecY[i])**2
+        acum = acum + (hipo2v(theta0, theta1, vectorX[i])-vectorY[i])**2
     
-    return acum/2.0*muestras
+    return acum/2.0*len(vectorX)
 
-def funchipo1v(theta, x):
+def hipo1v(theta, x):
     return theta*x
 
-def funchipo2v(theta0, theta1, x):
+def hipo2v(theta0, theta1, x):
     return theta0 + theta1*x
 
 file = open('ex1data1.csv',encoding="utf8",errors='ignore')
@@ -62,27 +62,61 @@ tetas1 = np.arange(0, 10, step = 0.1) #Pendientes (parece que será positiva)
 costes = []
 
 # Da para paja (Una variable)
-# Hay que vectorizar esta mierda
 #for i in range (len(tetas1)):
-#    costes.append(funCoste(len(vectorX), vectorX, vectorY, funchipo1v, tetas1[i]))
-#    print (funCoste(len(vectorX), vectorX, vectorY, funchipo1v, tetas1[i]))
+#    costes.append(funCoste(tetas1[i]))
+#    print (funCoste(tetas1[i]))
 
-#Vamos probando todas las combinaciones
-for i in range(len(tetas0)):
-    for j in range(len(tetas1)):
-        costes.append(funCoste2(len(vectorX), vectorX, vectorY, funchipo2v, tetas0[i], tetas1[j]))
+# Hay que usar el algoritmo de descenso de gradiente (pg.27)
+# Para theta 0 y 1 hay que actualizar sus valores con este algoritmo. (theta1 en caso de una variable solo)
+# Derivada * funcion coste viene "traducido" en la diapositiva 36
 
-min_coste = min(costes)
-print(min_coste)
+#Gradiente de theta0 cuando es = 0 (una variable)
+def sum0(theta):
+    #return sum(((fHipo(theta,vectorX)-vectorY)**2))/2.0*muestras
+    acum = 0.0 #Sumatorio
+    for i in range(len(vectorX)):
+        acum = acum + (hipo1v(theta, vectorX[i])-vectorY[i])
+    
+    return acum/len(vectorX) #Sumatorio/muestras
+
+#Gradiente de theta1
+def sum1(theta):
+    #return sum(((fHipo(theta,vectorX)-vectorY)**2))/2.0*muestras
+    acum = 0.0 #Sumatorio
+    for i in range(len(vectorX)):
+        acum = acum + (hipo1v(theta, vectorX[i])-vectorY[i])*vectorX[i] #Not sure if this is correct (parenthesis)
+    
+    return acum/len(vectorX) #Sumatorio/muestras
+
+# Funcion para ir actualizando theta0
+def alg_desGrad0(theta, alpha):
+    return theta - alpha*sum0(theta)
+
+# Funcion para ir actualizando theta1
+def alg_desGrad1(theta, alpha):
+    return theta - alpha*sum1(theta)
+
+# Con las funciones de descenso de gradiente, ahora solo queda iterar 
+# Y actualizar los valores de theta0 y theta1 para que tengan el menor coste posible
+# Repeat until convergence 
+def fun_final():
+    # while
+    a = 0.2 # alpha
+    temp0 = alg_desGrad0(theta0, a)
+    temp1 = alg_desGrad1(theta1, a)
+    theta0 = temp0
+    theta1 = temp1
+
 
 #print (costes)
-plt.figure()
+####### Intento de grafica 3d
+#plt.figure()
 #plt.plot(tetas1, costes, '-')
-fig = plt.figure()
+#fig = plt.figure()
 #Grafica gradiente 3d
-ax3d = fig.add_subplot(111, projection='3d')
-ax3d.plot_wireframe(tetas0, tetas1, costes) #Aqui da fallo
-plt.show()
+#ax3d = fig.add_subplot(111, projection='3d')
+#ax3d.plot_wireframe(tetas0, tetas1, costes) #Aqui da fallo
+#plt.show()
 
 plt.figure()
 plt.plot(vectorX, vectorY, 'x', color ="red")
