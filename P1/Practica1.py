@@ -31,15 +31,6 @@ def funCoste(theta):
     
     return acum/2.0*len(vectorX)
 
-# Funcion de coste con dos variables
-def funCoste2(theta0, theta1):
-    #return sum(((fHipo(theta,vectorX)-vectorY)**2))/2.0*muestras
-    acum = 0.0 #Sumatorio
-    for i in range(0, muestras):
-        acum = acum + (hipo2v(theta0, theta1, vectorX[i])-vectorY[i])**2
-    
-    return acum/2.0*len(vectorX)
-
 def hipo1v(theta, x):
     return theta*x
 
@@ -102,8 +93,8 @@ def alg_desGrad1(theta, alpha):
 def fun_final():
     # while
     a = 0.2 # alpha
-    temp0 = alg_desGrad0(theta0, a)
-    temp1 = alg_desGrad1(theta1, a)
+    temp0 = alg_desGrad0(theta0, a) # theta0 = 0? ir probando en las iteraciones imagino
+    temp1 = alg_desGrad1(theta1, a) # theta1 = 1?
     theta0 = temp0
     theta1 = temp1
 
