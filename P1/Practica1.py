@@ -92,11 +92,16 @@ def alg_desGrad1(theta, alpha):
 # Repeat until convergence 
 def fun_final():
     # while
-    a = 0.2 # alpha
-    temp0 = alg_desGrad0(theta0, a) # theta0 = 0? ir probando en las iteraciones imagino
-    temp1 = alg_desGrad1(theta1, a) # theta1 = 1?
-    theta0 = temp0
-    theta1 = temp1
+    for i in range (0, 2000):
+        a = 0.2 # alpha
+        theta0 = 0
+        theta1 = 0
+        temp0 = alg_desGrad0(theta0, a) # theta0 = 0? ir probando en las iteraciones imagino
+        temp1 = alg_desGrad1(theta1, a) # theta1 = 1?
+        theta0 = temp0
+        theta1 = temp1
+
+
 
 
 #print (costes)
