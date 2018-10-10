@@ -38,7 +38,6 @@ def funCoste(theta0, theta1):
 #Funcion de recta de hipótesis con 2 variables theta0  y theta1
 def hipo(theta0, theta1, x):
     return theta0 + theta1*x
-    #Gradiente de theta0 cuando es = 0 (una variable)
 
 
 # Funcion para el descenso de gradiente de theta0
@@ -46,10 +45,9 @@ def alg_desGrad0(theta0, theta1, alpha):
     #return sum(((fHipo(theta,vectorX)-vectorY)**2))/2.0*muestras
     acum = 0.0 #Sumatorio
     for i in range(muestras):
-        acum = acum + (hipo(theta0, theta1, vectorX[i])-vectorY[i])
+        acum = acum + (hipo(theta0, theta1, vectorX[i])-vectorY[i]) 
     
-    temp =  acum/muestras #Sumatorio/muestras
-    return theta0 - (alpha*temp)/muestras
+    return theta0 - (alpha/muestras)*acum
 
 # Funcion para el descenso de gradiente de theta1
 def alg_desGrad1(theta0, theta1, alpha):
@@ -58,17 +56,16 @@ def alg_desGrad1(theta0, theta1, alpha):
     for i in range(muestras):
         acum = acum + (hipo(theta0, theta1, vectorX[i])-vectorY[i])*vectorX[i] 
     
-    temp = acum/muestras #Sumatorio/muestras
-    return theta1 - (alpha*temp)/muestras
+    return theta1 - (alpha/muestras)*acum
 
 
 def fun_final():
 #Haremos 2000 iteraciones para comprobar.
     theta0 = 0.0
     theta1 = 0.0
-    x = 2000
+    x = 1500
+    a = 0.01
     for i in range (0, x):
-        a = 0.2
         temp0 = alg_desGrad0(theta0, theta1, a)
         temp1 = alg_desGrad1(theta0, theta1, a)
         theta0 = temp0
@@ -78,7 +75,7 @@ def fun_final():
         print('Coste: '+ str(funCoste(theta0, theta1)))
         print('\n')
 
-        #Metemos 1 de cada 200 thetas
+        #Dibujamos la ultima recta
         if (i == x-1):
             drawHipothesis(theta0, theta1)
     
