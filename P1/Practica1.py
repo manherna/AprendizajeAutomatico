@@ -32,7 +32,7 @@ def funCoste(theta0, theta1):
     for i in range(0, muestras):
         acum = acum + ((hipo(theta0, theta1, vectorX[i])-vectorY[i])**2)
     
-    return acum/(2.0*muestras)
+    return (acum/(2.0*float(muestras)))
 
 
 #Funcion de recta de hipótesis con 2 variables theta0  y theta1
@@ -47,7 +47,7 @@ def alg_desGrad0(theta0, theta1, alpha):
     for i in range(muestras):
         acum = acum + (hipo(theta0, theta1, vectorX[i])-vectorY[i]) 
     
-    return theta0 - (alpha/muestras)*acum
+    return theta0 - ((alpha/muestras)*acum)
 
 # Funcion para el descenso de gradiente de theta1
 def alg_desGrad1(theta0, theta1, alpha):
@@ -56,7 +56,7 @@ def alg_desGrad1(theta0, theta1, alpha):
     for i in range(muestras):
         acum = acum + (hipo(theta0, theta1, vectorX[i])-vectorY[i])*vectorX[i] 
     
-    return theta1 - (alpha/muestras)*acum
+    return theta1 - ((alpha/muestras)*acum)
 
 
 def fun_final():
@@ -65,25 +65,34 @@ def fun_final():
     theta1 = 0.0
     x = 1500
     a = 0.01
+    t0aux = t1aux = 0.0
+    costmin = funCoste(theta0, theta1)
+  
     for i in range (0, x):
         temp0 = alg_desGrad0(theta0, theta1, a)
         temp1 = alg_desGrad1(theta0, theta1, a)
         theta0 = temp0
         theta1 = temp1
+        costemp = funCoste(theta0, theta1) 
+        if(costmin > costemp):
+            t0aux = theta0
+            t1aux = theta1
+            costmin = costemp
 
         print('theta0: ',theta0, 'theta1: ', theta1)
-        print('Coste: '+ str(funCoste(theta0, theta1)))
+        print('Coste: '+ str(costemp))
         print('\n')
 
         #Dibujamos la ultima recta
         if (i == x-1):
             drawHipothesis(theta0, theta1)
-    
+    return (t0aux, t1aux)
+
 # Fin de definición de funciones --------------------------------------------------------------
 
 
 
-
+#Lectura de documento
 file = open('ex1data1.csv',encoding="utf8",errors='ignore')
 datos = csv.reader(file)
 
@@ -96,6 +105,7 @@ for x in range(len(lineas)):
     vectorY.append(float(lineas[x][1]))
 
 
+#Primer pintado de los puntos
 plt.figure()
 plt.plot(vectorX, vectorY, 'x', color ="red")
 plt.xticks(np.arange(int(min(vectorX)),int(max(vectorX)), step=5))
@@ -104,7 +114,8 @@ plt.xlabel("Población de la ciudad en 10.000s")
 plt.ylabel("Ingresos en $10.000")
 
 
-fun_final()
+#Ejecución de la regresión lineal
+taux = fun_final()
 
 
 
@@ -122,30 +133,11 @@ ax = fig.gca(projection = '3d')
 
 costFun3d = ax.plot_surface(thetas0, thetas1, costes, cmap=cm.coolwarm, linewidth=0, antialiased=False)
 
+#Función de coste en 2d
+cont = plt.figure()
+plt.contour(thetas0, thetas1, costes, np.logspace(-2,3,20), cmap=cm.coolwarm)
+plt.plot(taux[0], taux[1], 'x', color= 'red')
 
-
-
-# Da para paja (Una variable)
-#for i in range (len(tetas1)):
-#    costes.append(funCoste(tetas1[i]))
-#    print (funCoste(tetas1[i]))
-
-# Hay que usar el algoritmo de descenso de gradiente (pg.27)
-# Para theta 0 y 1 hay que actualizar sus valores con este algoritmo. (theta1 en caso de una variable solo)
-# Derivada * funcion coste viene "traducido" en la diapositiva 36
-
-
-
-
-#print (costes)
-####### Intento de grafica 3d
-#plt.figure()
-#plt.plot(tetas1, costes, '-')
-#fig = plt.figure()
-#Grafica gradiente 3d
-#ax3d = fig.add_subplot(111, projection='3d')
-#ax3d.plot_wireframe(tetas0, tetas1, costes) #Aqui da fallo
-#plt.show()
 
 
 plt.show()
