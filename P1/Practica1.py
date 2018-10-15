@@ -21,13 +21,13 @@ def drawHipothesis(theta0, theta1):
     xxx = np.linspace(min(vectorX), max(vectorX))
     yyy = theta0 + xxx*theta1
 
-    plt.plot(xxx, yyy, '-')
+    plt.plot(xxx, yyy, '-', label = 'Recta de hipótesis')
+   # linea.set_label("Recta de hipótesis con theta0: "+ str(theta0) + ", theta1: "+str(theta1))
 
 
 #Calcula la función de coste mediante theta, el numero de muestras
 #los vectores de puntos y la función de hipótesis
-def funCoste(theta0, theta1):
-    #return sum(((fHipo(theta,vectorX)-vectorY)**2))/2.0*muestras  #Pa vectorizar
+def funCoste(theta0, theta1, muestras):
     acum = 0.0 #Sumatorio
     for i in range(0, muestras):
         acum = acum + ((hipo(theta0, theta1, vectorX[i])-vectorY[i])**2)
@@ -42,7 +42,6 @@ def hipo(theta0, theta1, x):
 
 # Funcion para el descenso de gradiente de theta0
 def alg_desGrad0(theta0, theta1, alpha):
-    #return sum(((fHipo(theta,vectorX)-vectorY)**2))/2.0*muestras
     acum = 0.0 #Sumatorio
     for i in range(muestras):
         acum = acum + (hipo(theta0, theta1, vectorX[i])-vectorY[i]) 
@@ -51,7 +50,6 @@ def alg_desGrad0(theta0, theta1, alpha):
 
 # Funcion para el descenso de gradiente de theta1
 def alg_desGrad1(theta0, theta1, alpha):
-    #return sum(((fHipo(theta,vectorX)-vectorY)**2))/2.0*muestras
     acum = 0.0 #Sumatorio
     for i in range(muestras):
         acum = acum + (hipo(theta0, theta1, vectorX[i])-vectorY[i])*vectorX[i] 
@@ -60,32 +58,34 @@ def alg_desGrad1(theta0, theta1, alpha):
 
 
 def fun_final():
-#Haremos 2000 iteraciones para comprobar.
+#Haremos 1500 iteraciones para comprobar.
+    #Inicializacion de theta0 y theta1 a 0.0
     theta0 = 0.0
     theta1 = 0.0
     x = 1500
     a = 0.01
     t0aux = t1aux = 0.0
-    costmin = funCoste(theta0, theta1)
+    costmin = funCoste(theta0, theta1, muestras)
   
     for i in range (0, x):
         temp0 = alg_desGrad0(theta0, theta1, a)
         temp1 = alg_desGrad1(theta0, theta1, a)
         theta0 = temp0
         theta1 = temp1
-        costemp = funCoste(theta0, theta1) 
+        costemp = funCoste(theta0, theta1, muestras) 
         if(costmin > costemp):
             t0aux = theta0
             t1aux = theta1
             costmin = costemp
 
-        print('theta0: ',theta0, 'theta1: ', theta1)
-        print('Coste: '+ str(costemp))
+        print('Theta0: ',theta0, 'Theta1: ', theta1)
+        print('Coste: ', costemp)
         print('\n')
 
         #Dibujamos la ultima recta
         if (i == x-1):
             drawHipothesis(theta0, theta1)
+        #Retornamos los thetas asociados al valor minimo de la función de coste
     return (t0aux, t1aux)
 
 # Fin de definición de funciones --------------------------------------------------------------
@@ -116,29 +116,35 @@ plt.ylabel("Ingresos en $10.000")
 
 #Ejecución de la regresión lineal
 taux = fun_final()
+plt.legend();
+plt.savefig("puntosHipotesis")
 
 
 
 
 
 # Pintado de La función de coste
-thetas0 = np.arange(-10, 10, 0.25)
-thetas1 = np.arange(-1, 4, 0.25)
+thetas0 = np.arange(-10, 10, 0.01)
+thetas1 = np.arange(-1, 4, 0.01)
 thetas0, thetas1 = np.meshgrid(thetas0, thetas1)
 
-costes = funCoste(thetas0, thetas1)
+costes = funCoste(thetas0, thetas1, muestras)
 
 fig = plt.figure()
 ax = fig.gca(projection = '3d')
 
 costFun3d = ax.plot_surface(thetas0, thetas1, costes, cmap=cm.coolwarm, linewidth=0, antialiased=False)
-
+plt.xlabel("Valor θ0")
+plt.ylabel("Valor θ1")
+plt.savefig('3dcoste')
 #Función de coste en 2d
 cont = plt.figure()
 plt.contour(thetas0, thetas1, costes, np.logspace(-2,3,20), cmap=cm.coolwarm)
-plt.plot(taux[0], taux[1], 'x', color= 'red')
-
-
+plt.xlabel("Valor θ0")
+plt.ylabel("Valor θ1")
+plt.plot(taux[0], taux[1], 'x', color= 'red', label= 'Coste minimo obtenido')
+plt.legend()
+plt.savefig('Coste2D')
 
 plt.show()
 
