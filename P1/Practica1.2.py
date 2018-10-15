@@ -73,6 +73,10 @@ muestras = len(columna1)
 #Ahora viene cuando intentamos averiguar que es theta y me lio
 
 theta = [] # Hay que tener en cuenta que ahora theta es un vector con tantos elementos n como parametros tiene el caso
+# Mi teoria es: tenemos los datos del precio de las casas, que como datos son: tamaño y numero
+# De habitaciones, por ultimo el precio (vectorY), entonces... tendriamos dos parametros unicamente?
+
+
 # Funcion del cuadernillo de practicas (Necesito que la revises Manu)
 def fun_coste_vec(matrizX):
     ((np.transpose(np.matmul(matrizX, theta) - vectorY))/2*muestras)*(np.matmul(matrizX, theta) - vectorY) # La multiplicacion de entre medias debe ser '*' o 'np.matmul'?
@@ -92,9 +96,10 @@ def alg_desGrad(theta_i, rate): #theta[i] y tasa (alpha)
 # Y posteriormente construir la grafica de la fun de coste (ir dividiendo entre 3)
 tasa = 0.03
 
+coste = []
 #1500 iteraciones?
 #for i in range(1500): #FALTA RELLENAR para calcula theta (vector)
-    # do_stuff()
+    # coste.append(fun_coste_vec(X[i])) #do_stuff() #vale, como esta funcion llama a las otras para que tasa tenga... importancia?
     # tasa = tasa/3
 #------------------------------------------------------------------
 
