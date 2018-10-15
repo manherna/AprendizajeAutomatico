@@ -15,7 +15,33 @@ from matplotlib.ticker import LinearLocator, FormatStrFormatter
 
 import csv
 
+#TODO: X_0 igual a 1
+
 #----------- Funciones -----------
+# Funcion del cuadernillo de practicas (Necesito que la revises Manu)
+def fun_coste_vec(matrizX):
+    ((np.transpose(np.matmul(matrizX, theta) - vectorY))/2*muestras)*(np.matmul(matrizX, theta) - vectorY) # La multiplicacion de entre medias debe ser '*' o 'np.matmul'?
+
+
+#diapo 8, descenso de gradiente
+def alg_desGrad(theta, rate): #theta[i] y tasa (alpha)
+    acum = 0.0 #Sumatorio
+    for i in range(muestras):
+        acum = acum + (hipo(X[i], theta[i])-vectorY[i])*X[i] #Revisar, x es una matriz, no un vector
+    
+    return theta[i] - ((rate/muestras)*acum)
+
+def ec_normal(matrizX):
+    return np.linalg.pinv(np.matmul(np.transpose(matrizX),matrizX))*np.matmul(np.transpose(matrizX),vectorY)
+
+# Funcion que recibe matriz X con lo ejemplos de entrenamiento
+# Para normalizarlos (diapo 11)
+def normalizacion(x, media, desv):
+    return (x - media)/desv
+
+# Diapo 5, hipotesis
+def hipo(x, theta):
+    return np.dot(np.transpose(theta),x)
 
 #--------- Fin funciones ---------
 # Lectura de datos
@@ -32,7 +58,7 @@ for x in range(len(lineas)):
     columna2.append(float(lineas[x][1]))
     vectorY.append(float(lineas[x][2]))
 
-X = np.array([columna1, columna2]) # Matriz X, después habrá que trasponerla, por
+#X = np.array([columna1, columna2]) # Matriz X, después habrá que trasponerla, por
 # cómo hemos leido los datos. (tal y como los lee numpy ahora es: 
 # arriba la fila 'columna1'(si, el nombre es confuso), y debajo la fila 'columna2')
 
@@ -44,54 +70,64 @@ mediaY = np.mean(columna2)
 desvX = np.std(columna1)
 desvY = np.std(columna2)
 
-# Funcion que recibe matriz X con lo ejemplos de entrenamiento
-# Para normalizarlos (diapo 11)
-def normalizacion(x, media, desv):
-    return (x - media)/desv
+
+
+
 
 # Normalizar datos, sustituyendo cada valor por el cociente entre
 # Su diferencia con la media y la desviacion estandar
 # Dos vectores auxiliares que formaran la matriz final
-col1 = []
-col2 = []
+col1 = []  #Para guardar normalizacion de los x_1
+col2 = []  #Para guardar normalizacion de los x_2
 
-for elem in X[0]: # Primera futura columna (de momento es fila tal y como dijimos antes)
-    aux = normalizacion(elem, mediaX, desvX)
-    col1.append(aux)
-for elem in X[1]: # Segunda
-    aux = normalizacion(elem, mediaY, desvY)
-    col2.append(aux)
+#COLUMNA 0 de 1os para multiplicar por los theta_0
+col0 = [1 for n in columna1]
+col1 = normalizacion(columna1, mediaX, desvX) #Columna con los valores X_1 normalizados
+col2 = normalizacion(columna2, mediaY, desvY) #Columna con los valores X_2 normalizados
 
-X = np.array([col1, col2]) # La matriz final es la traspuesta de esta (X.T)
-X_norm = np.array(X.T) # Matriz normalizada
+X = np.array([col0, col1, col2]) # Matriz [3] [N]. Cada columna
+X_norm = np.array(X.T) # Matriz normalizada [N][3]
+
 
 mu = np.array([mediaX, mediaY])
 sigma = np.array([desvX, desvY])
 
 muestras = len(columna1)
 #---------HASTA AQUI TODO PRACTICAMENTE BIEN--------
+
+
 #Ahora viene cuando intentamos averiguar que es theta y me lio
 
-theta = [] # Hay que tener en cuenta que ahora theta es un vector con tantos elementos n como parametros tiene el caso
+#theta = [] # Hay que tener en cuenta que ahora theta es un vector con tantos elementos n como parametros tiene el caso
 # Mi teoria es: tenemos los datos del precio de las casas, que como datos son: tamaño y numero
 # De habitaciones, por ultimo el precio (vectorY), entonces... tendriamos dos parametros unicamente?
 
+# DEBUGGGGGGG
+theta = np.array([1, 2, 3])
+print(X_norm)
+print ('-----')
+print(theta)
+print('------')
 
-# Funcion del cuadernillo de practicas (Necesito que la revises Manu)
-def fun_coste_vec(matrizX):
-    ((np.transpose(np.matmul(matrizX, theta) - vectorY))/2*muestras)*(np.matmul(matrizX, theta) - vectorY) # La multiplicacion de entre medias debe ser '*' o 'np.matmul'?
+# JAJAJAJAAJ LO CONSEGUIIII
+print(hipo(theta, X_norm[0]))
 
-# Diapo 5, hipotesis
-def hipo(x):
-    return np.transpose(theta)*x
+print()
 
-#diapo 8, descenso de gradiente
-def alg_desGrad(theta_i, rate): #theta[i] y tasa (alpha)
-    acum = 0.0 #Sumatorio
-    for i in range(muestras):
-        acum = acum + (hipo(X[i])-vectorY[i])*X[i] #Revisar, x es una matriz, no un vector
-    
-    return theta_i - ((rate/muestras)*acum)
+#Atención a la fumada.
+#Cada fila de X_Normalizada, corresponde a un caso de los leídos.
+#La función de hipótesis devuelve el valor de y para cada caso de esos
+#Aplicando los valores de theta. 
+
+#Cuando hacemos y = theta0+ theta1*x, realmente estamos haciendo 
+#                         [1]
+# y = [theta0, theta1] *  [x]
+# Por tanto, hay que pasar a la función de hipótesis, cada vez, un caso
+# concreto del vector de X_T. Y cada uno de esos casos concretos es una
+# de las filas del vector. 
+
+
+
 # Introducir diferentes valores para la tasa de aprendizaje
 # Y posteriormente construir la grafica de la fun de coste (ir dividiendo entre 3)
 tasa = 0.03
@@ -106,7 +142,5 @@ coste = []
 #Esto es una formula que viene al final del cuadernillo, se supone que es esa linea y ya
 # Resolver de nuevo el problema con la ecuación normal (sin normalizar atributos (columna1 y 2))
 X = np.array([columna1, columna2])
-resultado = ec_normal(X) #Esto debería estar ya(?)
-def ec_normal(matrizX):
-    return np.linalg.pinv(np.matmul(np.transpose(matrizX),matrizX))*np.matmul(np.transpose(matrizX),vectorY)
+#resultado = ec_normal(X) #Esto debería estar ya(?)
 
