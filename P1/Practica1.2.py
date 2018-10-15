@@ -20,16 +20,16 @@ import csv
 #----------- Funciones -----------
 # Funcion del cuadernillo de practicas (Necesito que la revises Manu)
 def fun_coste_vec(matrizX):
-    ((np.transpose(np.matmul(matrizX, theta) - vectorY))/2*muestras)*(np.matmul(matrizX, theta) - vectorY) # La multiplicacion de entre medias debe ser '*' o 'np.matmul'?
+    ((np.transpose(np.matmul(matrizX, thetas) - vectorY))/2*muestras)*(np.matmul(matrizX, thetas) - vectorY) # La multiplicacion de entre medias debe ser '*' o 'np.matmul'?
 
 
 #diapo 8, descenso de gradiente
-def alg_desGrad(theta, rate): #theta[i] y tasa (alpha)
-    acum = 0.0 #Sumatorio
+def alg_desGrad(thetas, j, rate): #theta[i] y tasa (alpha)
+    acum = 0.0 #Sumatorio    
     for i in range(muestras):
-        acum = acum + (hipo(X[i], theta[i])-vectorY[i])*X[i] #Revisar, x es una matriz, no un vector
+        acum = acum + (hipo(X_norm[i], thetas)-vectorY[i])*X_norm[i][j] #Revisar, x es una matriz, no un vector
     
-    return theta[i] - ((rate/muestras)*acum)
+    return thetas[j] - ((float(rate)/muestras)*acum)
 
 def ec_normal(matrizX):
     return np.linalg.pinv(np.matmul(np.transpose(matrizX),matrizX))*np.matmul(np.transpose(matrizX),vectorY)
@@ -41,7 +41,7 @@ def normalizacion(x, media, desv):
 
 # Diapo 5, hipotesis
 def hipo(x, theta):
-    return np.dot(np.transpose(theta),x)
+    return np.dot(x,np.transpose(theta))
 
 #--------- Fin funciones ---------
 # Lectura de datos
@@ -102,17 +102,6 @@ muestras = len(columna1)
 # Mi teoria es: tenemos los datos del precio de las casas, que como datos son: tamaño y numero
 # De habitaciones, por ultimo el precio (vectorY), entonces... tendriamos dos parametros unicamente?
 
-# DEBUGGGGGGG
-theta = np.array([1, 2, 3])
-print(X_norm)
-print ('-----')
-print(theta)
-print('------')
-
-# JAJAJAJAAJ LO CONSEGUIIII
-print(hipo(theta, X_norm[0]))
-
-print()
 
 #Atención a la fumada.
 #Cada fila de X_Normalizada, corresponde a un caso de los leídos.
@@ -144,3 +133,15 @@ coste = []
 X = np.array([columna1, columna2])
 #resultado = ec_normal(X) #Esto debería estar ya(?)
 
+
+
+thetas = np.array([0 for n in X_norm[0]])
+temps = np.copy(thetas)
+alpha = 0.0001
+for j in range (0, 2000):
+    for i in range(len(thetas)):
+        temps[i] = alg_desGrad(thetas,i,alpha)
+    thetas = np.copy(temps)
+    alpha = alpha/3.0
+
+print(thetas)
