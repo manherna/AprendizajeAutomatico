@@ -24,7 +24,6 @@ def drawHipothesis(theta0, theta1):
     plt.plot(xxx, yyy, '-', label = 'Recta de hipótesis')
    # linea.set_label("Recta de hipótesis con theta0: "+ str(theta0) + ", theta1: "+str(theta1))
 
-
 #Calcula la función de coste mediante theta, el numero de muestras
 #los vectores de puntos y la función de hipótesis
 def funCoste(theta0, theta1, muestras):
@@ -34,11 +33,9 @@ def funCoste(theta0, theta1, muestras):
     
     return (acum/(2.0*float(muestras)))
 
-
 #Funcion de recta de hipótesis con 2 variables theta0  y theta1
 def hipo(theta0, theta1, x):
     return theta0 + theta1*x
-
 
 # Funcion para el descenso de gradiente de theta0
 def alg_desGrad0(theta0, theta1, alpha):
@@ -116,7 +113,7 @@ plt.ylabel("Ingresos en $10.000")
 
 #Ejecución de la regresión lineal
 taux = fun_final()
-plt.legend();
+plt.legend()
 plt.savefig("puntosHipotesis")
 
 
