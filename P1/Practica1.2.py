@@ -50,41 +50,60 @@ datos = csv.reader(file)
 
 lineas = list(datos)
 muestras = len(lineas)
-columna1 = []
-columna2 = []
-vectorY = [] # Este vector se utiliza en la funcion de coste
+nvars = 2
+vectorY = np.array([0 for n in range(muestras)]) # Este vector se utiliza en la funcion de coste
+
+#Nos creamos el vector X, que almacenará todos los valores para cada XsubN
+#
+numcols = len(lineas[0])
+print(numcols)
+
+vectorX = np.array([[0 for x in range (numcols)]for y in range (muestras)])
+
 for x in range(len(lineas)):
-    columna1.append(float(lineas[x][0]))
-    columna2.append(float(lineas[x][1]))
-    vectorY.append(float(lineas[x][2]))
+    for y in range (numcols+1):
+        if(y == 0):
+            vectorX [x][y] = 1
+        elif(y < numcols):
+            vectorX [x][y] = lineas[x][y-1]
+        else:
+            vectorY[x] = lineas[x][y-1]
 
 #X = np.array([columna1, columna2]) # Matriz X, después habrá que trasponerla, por
 # cómo hemos leido los datos. (tal y como los lee numpy ahora es: 
 # arriba la fila 'columna1'(si, el nombre es confuso), y debajo la fila 'columna2')
 
+#medias = np.array(len())
+
+
+
 # Ya que lo tenemos dividido por columnas, calculamos su media (np.mean)
-mediaX = np.mean(columna1)
-mediaY = np.mean(columna2)
+X_T = vectorX.transpose()
+mediasX = np.mean(X_T, axis= 1)
 
+print ('Medias X: ', mediasX)
+
+mediaY = np.mean(np.array(vectorY))
+print('Media Y: ', mediaY)
 # Ahora la desviacion estandar (np.std)
-desvX = np.std(columna1)
-desvY = np.std(columna2)
+
+desvX = np.std(X_T, axis = 1)
+print ('Desviación X: ', desvX)
+desvY = np.std(vectorY)
+print ('Desviación Y: ', desvY)
 
 
 
 
-
+print(X_T)
 # Normalizar datos, sustituyendo cada valor por el cociente entre
 # Su diferencia con la media y la desviacion estandar
-# Dos vectores auxiliares que formaran la matriz final
-col1 = []  #Para guardar normalizacion de los x_1
-col2 = []  #Para guardar normalizacion de los x_2
-
 #COLUMNA 0 de 1os para multiplicar por los theta_0
-col0 = [1 for n in columna1]
-col1 = normalizacion(columna1, mediaX, desvX) #Columna con los valores X_1 normalizados
-col2 = normalizacion(columna2, mediaY, desvY) #Columna con los valores X_2 normalizados
 
+for x in range (1,numcols+1):
+    X_T[x] = normalizacion(X_T[x], mediasX[x], desvX[x])
+
+print (X_T)
 X = np.array([col0, col1, col2]) # Matriz [3] [N]. Cada columna
 X_norm = np.array(X.T) # Matriz normalizada [N][3]
 

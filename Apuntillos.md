@@ -22,4 +22,27 @@ Para la practica 0, el algoritmo de descenso de gradiente se deberá repetir 200
 
 
 
+## Clasificacion
+Esta clase de problemas son aquellos en las que tenemos que identificar una serie de datos dentro de un grupo.
+El caso más simple es el de discernir entre 2 casos. *Por ejemplo, distinguir si un
+correo es spam o no es spam*
+
+La aproximación mediante regresión lineal no es válida para este caso.
+
+La función utilizada para aproximar los valores a uno u otro de los casos es la **función Sigmoide**:
+
+g(*z*) = 1/(1+*e*^(-z)) 
+
+Esta función sigmoide nos devolverá un valor entre 0 y 1, que significará la probabilidad de que cierto caso x, sea 1.
+
+Pero nosotros no queremos trabajar con probabilidades, así que para g(*z*) >= 0.5 la daremos como 1 y g(*z*)< 0.5 entonces la daremos como 0.
+
+De esta manera obtenemos una recta que nos divide los casos en 0 o 1, de la forma x1 + x2 - N = 0.
+
+
+
+
+
+
+
 
