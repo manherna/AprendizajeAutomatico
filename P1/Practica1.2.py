@@ -23,9 +23,8 @@ def predict_Y (vectX, thetas):
 
 
 # Funcion del cuadernillo de practicas 
-def fun_coste_vec(matrizX):
-    return np.matmul(((np.transpose(np.matmul(matrizX, thetas) - vectorY))/2*muestras),(np.matmul(matrizX, thetas) - vectorY)) # La multiplicacion de entre medias debe ser '*' o 'np.matmul'?
-
+def fun_coste_vec(matrizX, vectorY, thetas, muestras):
+    return (1.0/(2.0*muestras)) * np.matmul((np.matmul(matrizX, thetas)-vectorY).transpose(), (np.matmul(matrizX, thetas)-vectorY))
 
 #diapo 8, descenso de gradiente
 def alg_desGrad(thetas, j, rate): #theta[i] y tasa (alpha)
@@ -61,14 +60,14 @@ vectorY = np.array([0 for n in range(muestras)]) # Este vector se utiliza en la 
 
 #Numero de XsubJ que tenemos
 numcols = len(lineas[0])
-vectorX = np.array([[0 for x in range (numcols)]for y in range (muestras)])
+matrizX = np.array([[0 for x in range (numcols)]for y in range (muestras)])
 
 for x in range(len(lineas)):
     for y in range (numcols+1):
         if(y == 0):
-            vectorX [x][y] = 1
+            matrizX [x][y] = 1
         elif(y < numcols):
-            vectorX [x][y] = lineas[x][y-1]
+            matrizX [x][y] = lineas[x][y-1]
         else:
             vectorY[x] = lineas[x][y-1]
 
@@ -77,7 +76,7 @@ for x in range(len(lineas)):
 
 
 # Ya que lo tenemos dividido por columnas, calculamos su media (np.mean)
-X_T = vectorX.transpose()
+X_T = matrizX.transpose()
 
 mediasX = np.mean(X_T, axis= 1)
 mediaY = np.mean(np.array(vectorY))
@@ -97,33 +96,40 @@ for x in range (1,numcols):
 X_T_N = np.array(aux)
 X_N = X_T_N.transpose()
 
-print('X_T_N:------------------------------------------------\n',X_T_N)
-print('X_N:----------------------------------------------------\n', X_N)
 
-mu = np.array([0.0 for n in range(numcols+1)])
-for i in range(numcols):
-    mu[i] = mediasX[i]
-mu[numcols] = mediaY
-
-sigma = np.array([0.0 for n in range(numcols+1)])
-for i in range(numcols):
-    sigma[i] = desvX[i]
-sigma[numcols] = desvY
-
-
-
-
-thetas = np.array([0.0 for n in range (numcols)])
+thetas = np.array(np.zeros(numcols))
 temps = np.copy(thetas)
-alpha = 0.003
-for j in range (0, 2000):
-    for i in range(len(thetas)):
-        temps[i] = alg_desGrad(thetas,i,alpha)
-    thetas = np.copy(temps)
-    alpha = alpha/3
+alpha = 1
 
-print(thetas)
-xtest = [1, 2200,3]
+alphas = []
+costes = []
 
-thetas2 = ec_normal(vectorX, vectorY)
-print(predict_Y(xtest, thetas2))
+for i in range (10):
+    for j in range (0, 2000):
+        for k in range(len(thetas)):
+            temps[k] = alg_desGrad(thetas,k,alpha)
+        thetas = np.copy(temps)
+        alphas.append(alpha)
+        coste = fun_coste_vec(X_N, vectorY, thetas, muestras)
+        costes.append(coste)
+    alpha = alpha /3.0
+   
+print(len(alphas))
+plt.figure()
+plt.plot(alphas, costes, '-', label='Función de coste para cada valor de alpha')
+plt.grid(True)
+plt.show()
+#plt.savefig('CostesParaAlphas')
+
+thetas2 = ec_normal(matrizX, vectorY)
+xm2 = int(input("Introduzca pies²: "))
+xhabs = int(input ("Introduzca nºhabs: "))
+
+xm2_n= normalizacion(xm2,mediasX[1], desvX[1])
+xhabs_n = normalizacion(xhabs, mediasX[2], desvX[2])
+
+xtest = [[1, xm2_n, xhabs_n],[1, xm2, xhabs]]
+
+print("Estimación con descenso de gradiente: ", int(predict_Y(xtest[0], thetas)), '$')
+print("Estimación con Ecuación: ", int(predict_Y(xtest[1], thetas2)), '$')
+
