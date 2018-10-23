@@ -15,24 +15,29 @@ from matplotlib.ticker import LinearLocator, FormatStrFormatter
 
 import csv
 
-#TODO: X_0 igual a 1
 
 #----------- Funciones -----------
-# Funcion del cuadernillo de practicas (Necesito que la revises Manu)
+
+def predict_Y (vectX, thetas):
+    return np.matmul(vectX, thetas.T)
+
+
+# Funcion del cuadernillo de practicas 
 def fun_coste_vec(matrizX):
-    ((np.transpose(np.matmul(matrizX, thetas) - vectorY))/2*muestras)*(np.matmul(matrizX, thetas) - vectorY) # La multiplicacion de entre medias debe ser '*' o 'np.matmul'?
+    return np.matmul(((np.transpose(np.matmul(matrizX, thetas) - vectorY))/2*muestras),(np.matmul(matrizX, thetas) - vectorY)) # La multiplicacion de entre medias debe ser '*' o 'np.matmul'?
 
 
 #diapo 8, descenso de gradiente
 def alg_desGrad(thetas, j, rate): #theta[i] y tasa (alpha)
     acum = 0.0 #Sumatorio    
     for i in range(muestras):
-        acum = acum + (hipo(X_norm[i], thetas)-vectorY[i])*X_norm[i][j] #Revisar, x es una matriz, no un vector
+        acum = acum + (hipo(X_N[i], thetas.T)-vectorY[i])*X_N[i][j] #Revisar, x es una matriz, no un vector
     
-    return thetas[j] - ((float(rate)/muestras)*acum)
+    aux = (float(rate)/muestras)
+    return thetas[j] - (aux*acum)
 
-def ec_normal(matrizX):
-    return np.linalg.pinv(np.matmul(np.transpose(matrizX),matrizX))*np.matmul(np.transpose(matrizX),vectorY)
+def ec_normal(matrizX, matrizY):
+    return np.matmul(np.linalg.pinv(np.matmul(matrizX.T, matrizX)),(np.matmul(matrizX.T, matrizY)))
 
 # Funcion que recibe matriz X con lo ejemplos de entrenamiento
 # Para normalizarlos (diapo 11)
@@ -43,6 +48,8 @@ def normalizacion(x, media, desv):
 def hipo(x, theta):
     return np.dot(x,np.transpose(theta))
 
+
+
 #--------- Fin funciones ---------
 # Lectura de datos
 file = open('ex1data2.csv',encoding="utf8",errors='ignore')
@@ -50,14 +57,10 @@ datos = csv.reader(file)
 
 lineas = list(datos)
 muestras = len(lineas)
-nvars = 2
 vectorY = np.array([0 for n in range(muestras)]) # Este vector se utiliza en la funcion de coste
 
-#Nos creamos el vector X, que almacenará todos los valores para cada XsubN
-#
+#Numero de XsubJ que tenemos
 numcols = len(lineas[0])
-print(numcols)
-
 vectorX = np.array([[0 for x in range (numcols)]for y in range (muestras)])
 
 for x in range(len(lineas)):
@@ -69,98 +72,58 @@ for x in range(len(lineas)):
         else:
             vectorY[x] = lineas[x][y-1]
 
-#X = np.array([columna1, columna2]) # Matriz X, después habrá que trasponerla, por
-# cómo hemos leido los datos. (tal y como los lee numpy ahora es: 
-# arriba la fila 'columna1'(si, el nombre es confuso), y debajo la fila 'columna2')
 
-#medias = np.array(len())
 
 
 
 # Ya que lo tenemos dividido por columnas, calculamos su media (np.mean)
 X_T = vectorX.transpose()
+
 mediasX = np.mean(X_T, axis= 1)
-
-print ('Medias X: ', mediasX)
-
 mediaY = np.mean(np.array(vectorY))
-print('Media Y: ', mediaY)
+
 # Ahora la desviacion estandar (np.std)
-
 desvX = np.std(X_T, axis = 1)
-print ('Desviación X: ', desvX)
 desvY = np.std(vectorY)
-print ('Desviación Y: ', desvY)
 
-
-
-
-print(X_T)
 # Normalizar datos, sustituyendo cada valor por el cociente entre
 # Su diferencia con la media y la desviacion estandar
 #COLUMNA 0 de 1os para multiplicar por los theta_0
+aux = []
+aux.append(X_T[0])
+for x in range (1,numcols):
+    aux.append(normalizacion(X_T[x], mediasX[x], desvX[x]))
 
-for x in range (1,numcols+1):
-    X_T[x] = normalizacion(X_T[x], mediasX[x], desvX[x])
+X_T_N = np.array(aux)
+X_N = X_T_N.transpose()
 
-print (X_T)
-X = np.array([col0, col1, col2]) # Matriz [3] [N]. Cada columna
-X_norm = np.array(X.T) # Matriz normalizada [N][3]
+print('X_T_N:------------------------------------------------\n',X_T_N)
+print('X_N:----------------------------------------------------\n', X_N)
 
+mu = np.array([0.0 for n in range(numcols+1)])
+for i in range(numcols):
+    mu[i] = mediasX[i]
+mu[numcols] = mediaY
 
-mu = np.array([mediaX, mediaY])
-sigma = np.array([desvX, desvY])
-
-muestras = len(columna1)
-#---------HASTA AQUI TODO PRACTICAMENTE BIEN--------
-
-
-#Ahora viene cuando intentamos averiguar que es theta y me lio
-
-#theta = [] # Hay que tener en cuenta que ahora theta es un vector con tantos elementos n como parametros tiene el caso
-# Mi teoria es: tenemos los datos del precio de las casas, que como datos son: tamaño y numero
-# De habitaciones, por ultimo el precio (vectorY), entonces... tendriamos dos parametros unicamente?
-
-
-#Atención a la fumada.
-#Cada fila de X_Normalizada, corresponde a un caso de los leídos.
-#La función de hipótesis devuelve el valor de y para cada caso de esos
-#Aplicando los valores de theta. 
-
-#Cuando hacemos y = theta0+ theta1*x, realmente estamos haciendo 
-#                         [1]
-# y = [theta0, theta1] *  [x]
-# Por tanto, hay que pasar a la función de hipótesis, cada vez, un caso
-# concreto del vector de X_T. Y cada uno de esos casos concretos es una
-# de las filas del vector. 
+sigma = np.array([0.0 for n in range(numcols+1)])
+for i in range(numcols):
+    sigma[i] = desvX[i]
+sigma[numcols] = desvY
 
 
 
-# Introducir diferentes valores para la tasa de aprendizaje
-# Y posteriormente construir la grafica de la fun de coste (ir dividiendo entre 3)
-tasa = 0.03
 
-coste = []
-#1500 iteraciones?
-#for i in range(1500): #FALTA RELLENAR para calcula theta (vector)
-    # coste.append(fun_coste_vec(X[i])) #do_stuff() #vale, como esta funcion llama a las otras para que tasa tenga... importancia?
-    # tasa = tasa/3
-#------------------------------------------------------------------
-
-#Esto es una formula que viene al final del cuadernillo, se supone que es esa linea y ya
-# Resolver de nuevo el problema con la ecuación normal (sin normalizar atributos (columna1 y 2))
-X = np.array([columna1, columna2])
-#resultado = ec_normal(X) #Esto debería estar ya(?)
-
-
-
-thetas = np.array([0 for n in X_norm[0]])
+thetas = np.array([0.0 for n in range (numcols)])
 temps = np.copy(thetas)
-alpha = 0.0001
+alpha = 0.003
 for j in range (0, 2000):
     for i in range(len(thetas)):
         temps[i] = alg_desGrad(thetas,i,alpha)
     thetas = np.copy(temps)
-    alpha = alpha/3.0
+    alpha = alpha/3
 
 print(thetas)
+xtest = [1, 2200,3]
+
+thetas2 = ec_normal(vectorX, vectorY)
+print(predict_Y(xtest, thetas2))
