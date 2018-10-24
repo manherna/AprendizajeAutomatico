@@ -24,7 +24,8 @@ def predict_Y (vectX, thetas):
 
 # Funcion del cuadernillo de practicas 
 def fun_coste_vec(matrizX, vectorY, thetas, muestras):
-    return (1.0/(2.0*muestras)) * np.matmul((np.matmul(matrizX, thetas)-vectorY).transpose(), (np.matmul(matrizX, thetas)-vectorY))
+    oper = np.matmul(matrizX, thetas) - vectorY
+    return ((np.matmul(oper.T,oper) /(2.0*muestras)))
 
 #diapo 8, descenso de gradiente
 def alg_desGrad(thetas, j, rate): #theta[i] y tasa (alpha)
@@ -54,7 +55,7 @@ def hipo(x, theta):
 file = open('ex1data2.csv',encoding="utf8",errors='ignore')
 datos = csv.reader(file)
 
-lineas = list(datos)
+lineas = np.array(list(datos))
 muestras = len(lineas)
 vectorY = np.array([0 for n in range(muestras)]) # Este vector se utiliza en la funcion de coste
 
@@ -97,33 +98,43 @@ X_T_N = np.array(aux)
 X_N = X_T_N.transpose()
 
 
-thetas = np.array(np.zeros(numcols))
+thetas = np.array(np.ones(numcols))
 temps = np.copy(thetas)
 alpha = 1
 
 alphas = []
 costes = []
 
+
+
+figCostes = plt.figure()
+# 10 vueltas en las que dividimos alfa entre 3, para ir probando valores
 for i in range (10):
-    for j in range (0, 2000):
+    #1500 iteraciones para el descenso de gradiente
+    alphas = []
+    costes = []
+    for j in range (0, 1500):
+        # Actualizacion de thetas temporales
+        
         for k in range(len(thetas)):
             temps[k] = alg_desGrad(thetas,k,alpha)
-        thetas = np.copy(temps)
-        alphas.append(alpha)
-        coste = fun_coste_vec(X_N, vectorY, thetas, muestras)
-        costes.append(coste)
+        # copia de los nuevos valores de theta
+        thetas = temps
+        costes.append(fun_coste_vec(X_N, vectorY, thetas, muestras))
+     
+    plt.plot(costes, '-', label= "Alpha "+ str(alpha))
     alpha = alpha /3.0
-   
-print(len(alphas))
-plt.figure()
-plt.plot(alphas, costes, '-', label='Función de coste para cada valor de alpha')
+
+print (thetas)
+
 plt.grid(True)
+plt.legend()
 plt.show()
 #plt.savefig('CostesParaAlphas')
 
 thetas2 = ec_normal(matrizX, vectorY)
 xm2 = int(input("Introduzca pies²: "))
-xhabs = int(input ("Introduzca nºhabs: "))
+xhabs = int(input ("Introduzca el número de habitaciones: "))
 
 xm2_n= normalizacion(xm2,mediasX[1], desvX[1])
 xhabs_n = normalizacion(xhabs, mediasX[2], desvX[2])
