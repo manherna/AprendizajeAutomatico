@@ -64,10 +64,6 @@ def alg_desGrad(matrizX, vectorY, thetas, m): #theta[i] y tasa (alpha)
     print(oper2)
     print(oper1.dot(oper2))
 
-
-
-def hipo(x, tetas):
-    return x
 #--------- Fin funciones ---------
 
 # Lectura de datos
@@ -80,11 +76,14 @@ vectorY = np.array([0 for n in range(muestras)]) # Este vector se utiliza en la 
 
 #Numero de XsubJ que tenemos
 numcols = len(lineas[0])
-matrizX = ((np.vstack(lineas.T[0:-1])).T).astype(float)            #np.array([[np.zeros(numcols-1)]for y in range (muestras)]))
+tempa = np.ones(muestras)
+X_plain = lineas.T[0:-1].astype(float)
+z = (tempa, X_plain)
+matrizX = ((np.vstack(z)).T).astype(float)            #np.array([[np.zeros(numcols-1)]for y in range (muestras)]))
 vectorY = np.hstack(lineas.T[-1]).astype(int)
-tprueba = np.array([0,0])
+tprueba = np.array([0,0,0])
 
-print(fun_coste(matrizX, vectorY, tprueba, muestras))
+print("Coste: ", fun_coste(matrizX,vectorY, tprueba, muestras))
 print(alg_desGrad(matrizX, vectorY, tprueba, muestras))
 
 #print("X:", matrizX, "Shape: " ,matrizX.shape)
@@ -94,10 +93,11 @@ print(alg_desGrad(matrizX, vectorY, tprueba, muestras))
 pos = np.where(vectorY==1)
 neg = np.where(vectorY==0)
 
+
 #Grafica
 plt.figure()
-plt.scatter(matrizX[pos, 0], matrizX[pos, 1], marker='+', c='k')
-plt.scatter(matrizX[neg, 0], matrizX[neg, 1], marker='o', c='y')
+plt.scatter(X_plain.T[pos, 0], X_plain.T[pos, 1], marker='+', c='k')
+plt.scatter(X_plain.T[neg, 0], X_plain.T[neg, 1], marker='o', c='y')
 
 plt.show()
 
