@@ -16,23 +16,55 @@ from matplotlib.ticker import LinearLocator, FormatStrFormatter
 import csv
 #----------- Funciones -----------
 
+def sigmoide(z):
+    return 1.0/(1.0 + np.exp(-z))
+
+def zeta(theta, x):
+    return np.transpose(theta)*x
+
+def pinta_frontera_recta(X, Y, theta):
+    plt.figure()
+    x1_min, x1_max = X[:, 0].min(), X[:, 0].max()
+    x2_min, x2_max = X[:, 1].min(), X[:, 1].max()
+
+    xx1, xx2 = np.meshgrid(np.linspace(x1_min, x1_max),
+    np.linspace(x2_min, x2_max))
+
+    h = sigmoide(np.c_[np.ones((xx1.ravel().shape[0], 1)),
+    xx1.ravel(),
+    xx2.ravel()].dot(theta))
+    h = h.reshape(xx1.shape)
+
+    # el cuarto parámetro es el valor de z cuya frontera se
+    # quiere pintar
+    plt.contour(xx1, xx2, h, [0.5], linewidths=1, colors='b')
+    plt.savefig("frontera.pdf")
+    plt.close()
+
 def predict_Y (vectX, thetas):
     return np.matmul(vectX, thetas.T)
 
-
 # Funcion del cuadernillo de practicas 
-def fun_coste_vec(matrizX, vectorY, thetas, muestras):
-    oper = np.matmul(matrizX, thetas) - vectorY
-    return ((np.matmul(oper.T,oper) /(2.0*muestras)))
+def fun_coste(matrizX, vectorY, thetas, muestras):
+    H = sigmoide(np.dot(matrizX, thetas))       #(g(Xthetas)
+    oper1 = -(1.0/muestras)
+    oper2 = np.dot((np.log(H)).T, vectorY)      #((log(g(*thetas)))TRASPUESTA MINIIO
+    oper3 = (np.log(1-H)).T                     #(log(1-g(X*thetas))).T
+    oper4 = 1-vectorY
+
+    return oper1 * (oper2 + np.dot(oper3, oper4))
 
 #diapo 8, descenso de gradiente
-def alg_desGrad(thetas, j, rate): #theta[i] y tasa (alpha)
-    acum = 0.0 #Sumatorio    
-    for i in range(muestras):
-        acum = acum + (hipo(X_N[i], thetas.T)-vectorY[i])*X_N[i][j] #Revisar, x es una matriz, no un vector
-    
-    aux = (float(rate)/muestras)
-    return thetas[j] - (aux*acum)
+def alg_desGrad(matrizX, vectorY, thetas, m): #theta[i] y tasa (alpha)
+    H = sigmoide(np.dot(matrizX, thetas))       #(g(Xthetas)
+    oper1 = (1.0/m)*matrizX.T
+    oper2 =  H - vectorY
+
+    print(oper1)
+    print(oper2)
+    print(oper1.dot(oper2))
+
+
 
 def hipo(x, tetas):
     return x
@@ -48,24 +80,24 @@ vectorY = np.array([0 for n in range(muestras)]) # Este vector se utiliza en la 
 
 #Numero de XsubJ que tenemos
 numcols = len(lineas[0])
-matrizX = np.array([[0 for x in range (numcols-1)]for y in range (muestras)])
+matrizX = ((np.vstack(lineas.T[0:-1])).T).astype(float)            #np.array([[np.zeros(numcols-1)]for y in range (muestras)]))
+vectorY = np.hstack(lineas.T[-1]).astype(int)
+tprueba = np.array([0,0])
 
+print(fun_coste(matrizX, vectorY, tprueba, muestras))
+print(alg_desGrad(matrizX, vectorY, tprueba, muestras))
 
-for x in range(len(lineas)):
-    for y in range (numcols):        
-        if(y == numcols-1):
-            vectorY[x] = lineas[x][y]            
-        else:
-            matrizX [x][y] = (float)(lineas[x][y])
-            
-print("X:", matrizX, "Shape: " ,matrizX.shape)
-print("Y:", vectorY, "Shape: " ,vectorY.shape)
+#print("X:", matrizX, "Shape: " ,matrizX.shape)
+#print("Y:", vectorY, "Shape: " ,vectorY.shape)
 
 #Vector de indices donde Y es positiva
 pos = np.where(vectorY==1)
+neg = np.where(vectorY==0)
 
 #Grafica
 plt.figure()
 plt.scatter(matrizX[pos, 0], matrizX[pos, 1], marker='+', c='k')
+plt.scatter(matrizX[neg, 0], matrizX[neg, 1], marker='o', c='y')
 
 plt.show()
+
