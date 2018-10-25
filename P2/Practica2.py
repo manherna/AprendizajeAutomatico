@@ -14,8 +14,6 @@ from matplotlib import cm
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
 
 import csv
-
-
 #----------- Funciones -----------
 
 def predict_Y (vectX, thetas):
@@ -63,3 +61,11 @@ for x in range(len(lineas)):
 print("X:", matrizX, "Shape: " ,matrizX.shape)
 print("Y:", vectorY, "Shape: " ,vectorY.shape)
 
+#Vector de indices donde Y es positiva
+pos = np.where(vectorY==1)
+
+#Grafica
+plt.figure()
+plt.scatter(matrizX[pos, 0], matrizX[pos, 1], marker='+', c='k')
+
+plt.show()
