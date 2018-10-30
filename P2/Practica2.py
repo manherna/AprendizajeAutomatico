@@ -76,17 +76,19 @@ X_plain = lineas.T[0:-1].astype(float)
 z = (tempa, X_plain)
 matrizX = ((np.vstack(z)).T).astype(float)            #np.array([[np.zeros(numcols-1)]for y in range (muestras)]))
 vectorY = np.hstack(lineas.T[-1]).astype(int)
-thetas = np.array([0,0,0])
-
+thetas = np.zeros(numcols)
 
 
 pinta_frontera_recta(matrizX, vectorY, thetas)
 result = opt.fmin_tnc(func = fun_coste, x0 =thetas, fprime=alg_desGrad, args=(matrizX, vectorY, muestras))
-thetas_opt = result[1]
+thetas_opt = result[0]
+print(result[0])
 
-print("Optimized thetas", thetas, " Cost: ", fun_coste(matrizX, vectorY, thetas, muestras))
+print("Optimized thetas", thetas_opt)
+print(" Cost: ", fun_coste(thetas_opt, matrizX, vectorY, muestras))
 
 
+pinta_frontera_recta(matrizX, vectorY, thetas_opt)
 
 
 
