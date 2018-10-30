@@ -12,6 +12,7 @@ import scipy as sp
 import time
 from matplotlib import cm
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
+import scipy.optimize as opt
 
 import csv
 #----------- Funciones -----------
@@ -38,32 +39,26 @@ def pinta_frontera_recta(X, Y, theta):
     # el cuarto parámetro es el valor de z cuya frontera se
     # quiere pintar
     plt.contour(xx1, xx2, h, [0.5], linewidths=1, colors='b')
-    plt.savefig("frontera.pdf")
+    plt.savefig("frontera.png")
     plt.close()
 
 def predict_Y (vectX, thetas):
     return np.matmul(vectX, thetas.T)
 
 # Funcion del cuadernillo de practicas 
-def fun_coste(matrizX, vectorY, thetas, muestras):
-    H = sigmoide(np.dot(matrizX, thetas))       #(g(Xthetas)
-    oper1 = -(1.0/muestras)
-    oper2 = np.dot((np.log(H)).T, vectorY)      #((log(g(*thetas)))TRASPUESTA MINIIO
-    oper3 = (np.log(1-H)).T                     #(log(1-g(X*thetas))).T
+def fun_coste(thetas, matrizX, vectorY, muestras):
+    H = sigmoide(np.dot(matrizX, thetas))       
+    oper1 = -(float(1)/muestras)
+    oper2 = np.dot((np.log(H)).T, vectorY)      
+    oper3 = (np.log(1-H)).T                     
     oper4 = 1-vectorY
 
     return oper1 * (oper2 + np.dot(oper3, oper4))
 
 #diapo 8, descenso de gradiente
-def alg_desGrad(matrizX, vectorY, thetas, m): #theta[i] y tasa (alpha)
-    H = sigmoide(np.dot(matrizX, thetas))       #(g(Xthetas)
-    oper1 = (1.0/m)*matrizX.T
-    oper2 =  H - vectorY
-
-    print(oper1)
-    print(oper2)
-    print(oper1.dot(oper2))
-
+def alg_desGrad(thetas, matrizX, vectorY, muestras):
+    H = sigmoide(np.dot(matrizX, thetas))  
+    return np.dot((1.0/muestras), matrizX.T).dot(H-vectorY)
 #--------- Fin funciones ---------
 
 # Lectura de datos
@@ -81,23 +76,31 @@ X_plain = lineas.T[0:-1].astype(float)
 z = (tempa, X_plain)
 matrizX = ((np.vstack(z)).T).astype(float)            #np.array([[np.zeros(numcols-1)]for y in range (muestras)]))
 vectorY = np.hstack(lineas.T[-1]).astype(int)
-tprueba = np.array([0,0,0])
+thetas = np.array([0,0,0])
 
-print("Coste: ", fun_coste(matrizX,vectorY, tprueba, muestras))
-print(alg_desGrad(matrizX, vectorY, tprueba, muestras))
 
-#print("X:", matrizX, "Shape: " ,matrizX.shape)
-#print("Y:", vectorY, "Shape: " ,vectorY.shape)
+
+pinta_frontera_recta(matrizX, vectorY, thetas)
+result = opt.fmin_tnc(func = fun_coste, x0 =thetas, fprime=alg_desGrad, args=(matrizX, vectorY, muestras))
+thetas_opt = result[1]
+
+print("Optimized thetas", thetas, " Cost: ", fun_coste(matrizX, vectorY, thetas, muestras))
+
+
+
+
+
+
 
 #Vector de indices donde Y es positiva
 pos = np.where(vectorY==1)
 neg = np.where(vectorY==0)
-
-
 #Grafica
 plt.figure()
-plt.scatter(X_plain.T[pos, 0], X_plain.T[pos, 1], marker='+', c='k')
-plt.scatter(X_plain.T[neg, 0], X_plain.T[neg, 1], marker='o', c='y')
+plt.scatter(X_plain.T[pos, 0], X_plain.T[pos, 1], marker='+', c='k', label = "Admitted")
+plt.scatter(X_plain.T[neg, 0], X_plain.T[neg, 1], marker='o', c='y', label = "Not Admited")
+plt.legend()
+plt.savefig("ScarcedPoints")
 
-plt.show()
+
 
