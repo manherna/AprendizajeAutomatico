@@ -57,7 +57,7 @@ def alg_desGrad(thetas, matrizX, vectorY, muestras):
     H = sigmoide(np.dot(matrizX, thetas))  
     return np.dot((1.0/muestras), matrizX.T).dot(H-vectorY)
 
-def plot_decisionboundary
+
 
 #--------- Fin funciones ---------
 
