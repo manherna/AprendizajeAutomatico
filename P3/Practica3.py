@@ -10,32 +10,19 @@ def sigmoide(z):
     return 1.0/(1.0 + np.exp(-z))
 
 def hipotesis (thetas, X):
-    print("HIPOTESIS SHAPES: ")
-    print("TH: ", thetas.shape)
-    print ("X ", X.shape)
-    print("SHAPE OF HIPOTHESIS: ",X.dot(thetas.T).shape)
+    return sigmoide(X.dot(thetas))
 
+def funcoste(thetas, X, Y):
+    H = sigmoide(np.dot(X, thetas))       
+    oper1 = -(float(1)/len(X))
+    oper2 = np.dot((np.log(H)).T, Y)      
+    oper3 = (np.log(1-H)).T                     
+    oper4 = 1-Y
+    return oper1 * (oper2 + np.dot(oper3, oper4))
 
-    return X.T.dot(thetas.T)
-
-def funcoste(X, Y, muestras):
-    print("FUNCOSTE SHAPES: ")
-    print("TH: ", thetas.shape)
-    print ("X: ", X.shape)
-    print("Y: ", Y.shape)
-
-    oper1 = (1/muestras)
-    operlog = np.ravel(np.log(hipotesis(X, thetas)))
-
-
-    print("operlog ", operlog.shape)
-    z = np.ravel(-Y).dot(operlog.T)-np.ravel(1-Y).dot(operlog.T)
-    print("Z: ", z.shape)
-    return oper1* sum(z)
-
-
-
-
+def alg_desGrad(thetas, X, Y):
+    H = sigmoide(np.dot(X, thetas))  
+    return np.dot((1.0/len(X)), X.T).dot(H-Y)
 
 #Fin de definicion de funciones -----------------------------------------------------------
 
@@ -47,11 +34,12 @@ data = loadmat('ex3data1.mat')
 Y = data['y']  # Representa el valor real de cada ejemplo de entrenamiento de X (y para cada X)
 X = data['X']  # Cada fila de X representa una escala de grises de 20x20 desplegada linearmente (400 pixeles)
 nMuestras = len(X)
-thetas = np.zeros(len(X[0]))
+X_unos = np.hstack([np.ones((len(X), 1)),X])
+thetas = np.zeros(len(X_unos[0]))
+Y = np.ravel(Y)
 
 
-print(hipotesis(thetas, X[0]))
-print(funcoste(X, Y, nMuestras))
+print(funcoste(thetas, X_unos, Y))
 #print(Y.shape)
 
 
