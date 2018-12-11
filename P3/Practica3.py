@@ -69,7 +69,6 @@ Y = np.ravel(Y)
 
 
 thetas_opt = oneVsAll(X_unos, Y, 10, 0.1)
-
 resultados = hipotesis(thetas_opt.T, X_unos) #Resultados es un array de (10, 5000) con el resultado de aplicar hipotesis a X
 
 prediccion = resultados.argmax(axis = 1) #Este será un array de (1, 5000) con las posibilidades de que un numero haya sido predecido correctamente

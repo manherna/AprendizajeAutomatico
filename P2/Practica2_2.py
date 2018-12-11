@@ -24,7 +24,6 @@ def fun_coste(thetas, matrizX, vectorY, muestras, _lambda):
     oper3 = (np.log(1-H)).T                     
     oper4 = 1-vectorY
     oper5 = (_lambda/(2*muestras))*np.sum(thetas**2)
-
     return (oper1 * (oper2 + np.dot(oper3, oper4)))+ oper5
 
 #diapo 8, descenso de gradiente
