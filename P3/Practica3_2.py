@@ -21,7 +21,6 @@ theta1, theta2 = weights['Theta1'], weights ['Theta2']
 
 aux = sigmoide(X_unos.dot(theta1.T))
 aux = np.hstack([np.ones((len(aux),1)), aux])
-
 #El resultado de utilizar la red neuronal será una matriz de 5000 x 10, con las probabilidades de que cada caso sea un numero.
 results = sigmoide(aux.dot(theta2.T))
 
