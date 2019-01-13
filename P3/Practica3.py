@@ -63,7 +63,7 @@ data = loadmat('ex3data1.mat')
 Y = data['y']  # Representa el valor real de cada ejemplo de entrenamiento de X (y para cada X)
 X = data['X']  # Cada fila de X representa una escala de grises de 20x20 desplegada linearmente (400 pixeles)
 nMuestras = len(X)
-X_unos = np.hstack([np.ones((len(X), 1)),X])
+X_unos = np.hstack([np.ones((len(X),1)),X])
 thetas = np.zeros(len(X_unos[0]))
 Y = np.ravel(Y)
 
