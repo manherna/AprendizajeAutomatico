@@ -12,6 +12,7 @@ def sigmoid(z):
 def sigmoidDerivative(z):
     return sigmoid(z)*(1-sigmoid(z))
 
+# Es realmente la función hipótesis. Dada una entrada X, y una red neuronal (thetas), calcula una salida
 def frontProp(thetas1, thetas2, X):
     z2 = thetas1.dot(X.T)
     a2 = sigmoid(z2)
@@ -19,6 +20,7 @@ def frontProp(thetas1, thetas2, X):
     a3 = sigmoid(z3)
     return a3
 
+#CostFun calcula el coste ponderado de una entrada usando front-propagation
 def costFun(X, y, theta1, theta2,  reg):
     hipo = frontProp(theta1, theta2, X)
     muestras = y.shape[0]
@@ -26,6 +28,7 @@ def costFun(X, y, theta1, theta2,  reg):
     regcost = ((np.sum(theta1**2)+np.sum(theta2**2))*reg)/(2*muestras)
     return cost + regcost
 
+# Este algoritmo calcula el coste de la red neuronal y distribuye el coste entre las neuronas.
 def backprop(params_rn, num_entradas, num_ocultas, num_etiquetas, X, y, reg):
     theta1 = np.reshape(params_rn[:num_ocultas *(num_entradas + 1)],(num_ocultas, (num_entradas+1)))
     theta1 = np.insert(theta1,0,1,axis = 0) # Theta1 es un array de num_ocultas +1, num_entradas
@@ -34,25 +37,37 @@ def backprop(params_rn, num_entradas, num_ocultas, num_etiquetas, X, y, reg):
     # Array con los thetas de la red.
     # Dimensiones (num_entradas, num_etiquetas)
     X_unos = np.hstack([np.ones((len(X), 1), dtype = np.int), X])
+
+
+    # Computamos el coste con los thetas obtenidos haciendo uso de la funcion cosfun
     cost = costFun(X_unos, y, theta1, theta2, reg)
 
     deriv = sigmoidDerivative(theta1.dot(X_unos.T))
-    print(deriv.shape)
 
-    for t in range (len(y)):
-        caseX = X_unos[t]
-        caseY = y[t]
-        hipo = frontProp(theta1, theta2, caseX)
-        delta3 = hipo - caseY
-        delta2 = theta2.T.dot(delta3).dot(deriv)
-        if(t == 1 ): 
-            print(delta3.shape)
-            print(delta2.shape)
-    
+    hipo = frontProp(theta1, theta2, X_unos)
+
+    delta3 = hipo - y.T
+
+
+
+##### A PARTIR DE AQUÍ NI IDEA
+
+    print(delta3.shape)
+    print(theta2.shape)
+    print(deriv.shape)  
+    theta2 = weightInitialize(10, 25)
+    print("AA: ", theta2[1: , :].shape)
+
+    #Hay que retirar la fila 0 (que es la fila de los 1s)
+    delta2 = theta2.T[1:, :].dot(delta3) * (deriv)
+    print(delta2.shape)
+
+
+    gradient = delta2 + delta3.dot(sigmoid(theta1.dot(X_unos.T)).T)
 
     return cost
 
-
+# Devuelve la matriz Y de tamaño (nMuestras, nEtiquetas) con filas con todo a 0 menos 1 caso a 1.
 def getYMatrix(Y, nMuestras, nEtiquetas):
     nY =  np.zeros((nMuestras, nEtiquetas))
     yaux = Y -1
@@ -84,4 +99,4 @@ theta1, theta2 = weights['Theta1'], weights ['Theta2']
 
 
 params = np.hstack((np.ravel(theta1), np.ravel(theta2)))
-print(backprop(params,X.shape[1], 25, 10, X, Y_Mat, 0.7))
+print(backprop(params,X.shape[1], 25, 10, X, Y_Mat, 1))
