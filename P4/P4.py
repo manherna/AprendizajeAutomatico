@@ -18,11 +18,11 @@ def frontProp(thetas1, thetas2, X):
     a2 = sigmoid(z2)
     z3 = thetas2.dot(a2)
     a3 = sigmoid(z3)
-    return a3
+    return z2, a2, z3, a3
 
 #CostFun calcula el coste ponderado de una entrada usando front-propagation
 def costFun(X, y, theta1, theta2,  reg):
-    hipo = frontProp(theta1, theta2, X)
+    hipo  = frontProp(theta1, theta2, X)[3]
     muestras = y.shape[0]
     cost = np.sum((-y.T)*(np.log(hipo)) - (1-y.T)*(np.log(1- hipo)))/muestras
     regcost = ((np.sum(theta1**2)+np.sum(theta2**2))*reg)/(2*muestras)
@@ -44,34 +44,37 @@ def backprop(params_rn, num_entradas, num_ocultas, num_etiquetas, X, y, reg):
 
     deriv = sigmoidDerivative(theta1.dot(X_unos.T))
 
-    hipo = frontProp(theta1, theta2, X_unos)
+    z2, a2, z3, a3 = frontProp(theta1, theta2, X_unos)
 
-    delta3 = hipo - y.T
+    gradW2 = np.zeros(theta2.shape)
+    gradW1 = np.zeros(theta1[1:,].shape)
 
+    print("W1: ", gradW1.shape)
+    #De momento solo está implementada la gradiente de W2, que es Theta2.
+    #Aun no está vectorizada. Calcula el coste por cada muestra.
 
+    for i in range (nMuestras):
 
-##### A PARTIR DE AQUÍ NI IDEA
+        delta3 = -(y[i,: ] - a3[:, i])
+        delta3 = np.array(delta3)[np.newaxis] # Esto se hace para que numpy lo identifique como un array bidimensional (1, 10)
+                                            #   y se pueda trasponer
+        casea2 = np.array(a2[:, 1])[np.newaxis] # Lo mismo con éste
 
-    print(delta3.shape)
-    print(theta2.shape)
-    print(deriv.shape)  
-    theta2 = weightInitialize(10, 25)
-    print("AA: ", theta2[1: , :].shape)
+        gradW2 = gradW2 + delta3.T.dot(casea2) # Obtenemos el gradiente para este caso y se lo sumamos a lo que llevamos
 
-    #Hay que retirar la fila 0 (que es la fila de los 1s)
-    delta2 = theta2.T[1:, :].dot(delta3) * (deriv)
-    print(delta2.shape)
+        # ----------------- ATENCION EPIC APRENDIZAJE AUTOMATICO PLAYERS ----------------------------
+        # falta por implementar el gradiente para el vector de pesos W1 = theta1. Debería ser un Array
+        # de las mismas dimensiones que W1: (401, 26), pero aun no lo he conseguido
 
+    gradW2 = gradW2/nMuestras #Normalizamos el valor
 
-    gradient = delta2 + delta3.dot(sigmoid(theta1.dot(X_unos.T)).T)
-
-    return cost
+    return cost, (gradW1, gradW2) # retornamos el coste y los 2 gradientes
 
 # Devuelve la matriz Y de tamaño (nMuestras, nEtiquetas) con filas con todo a 0 menos 1 caso a 1.
 def getYMatrix(Y, nMuestras, nEtiquetas):
     nY =  np.zeros((nMuestras, nEtiquetas))
     yaux = Y -1
-    
+
     for i in range(len(nY)):
         nY[i][yaux[i]] = 1
     return nY
