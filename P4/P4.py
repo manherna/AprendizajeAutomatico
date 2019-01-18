@@ -49,26 +49,17 @@ def backprop(params_rn, num_entradas, num_ocultas, num_etiquetas, X, y, reg):
     gradW2 = np.zeros(theta2.shape)
     gradW1 = np.zeros(theta1[1:,].shape)
 
-    print("W1: ", gradW1.shape)
-    #De momento solo está implementada la gradiente de W2, que es Theta2.
-    #Aun no está vectorizada. Calcula el coste por cada muestra.
+    delta3 = -(y.T-a3)
+    delta2 = delta3.T.dot(theta2)*sigmoidDerivative(z2.T)
 
-    for i in range (nMuestras):
-
-        delta3 = -(y[i,: ] - a3[:, i])
-        delta3 = np.array(delta3)[np.newaxis] # Esto se hace para que numpy lo identifique como un array bidimensional (1, 10)
-                                            #   y se pueda trasponer
-        casea2 = np.array(a2[:, 1])[np.newaxis] # Lo mismo con éste
-
-        gradW2 = gradW2 + delta3.T.dot(casea2) # Obtenemos el gradiente para este caso y se lo sumamos a lo que llevamos
-
-        delta2 = delta3.dot(theta2)*sigmoidDerivative(z2[:, i])
-        xcase = np.array(X_unos[i, :])[np.newaxis]
-        gradW1 = gradW1 + delta2[:,1:].T.dot(xcase)
+    gradW2 = delta3.dot(a2.T)
+    gradW1 = delta2[:, 1:].T.dot(X_unos)
 
 
     gradW2 = gradW2/nMuestras #Normalizamos el valor
     gradW1 = gradW1/nMuestras
+
+
     return cost, (gradW1, gradW2) # retornamos el coste y los 2 gradientes
 
 # Devuelve la matriz Y de tamaño (nMuestras, nEtiquetas) con filas con todo a 0 menos 1 caso a 1.
@@ -103,4 +94,4 @@ theta1, theta2 = weights['Theta1'], weights ['Theta2']
 
 
 params = np.hstack((np.ravel(theta1), np.ravel(theta2)))
-print(backprop(params,X.shape[1], 25, 10, X, Y_Mat, 1))
+print(backprop(params,X.shape[1], 25, 10, X, Y_Mat, 1)[0])
