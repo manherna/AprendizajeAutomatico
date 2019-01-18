@@ -62,12 +62,13 @@ def backprop(params_rn, num_entradas, num_ocultas, num_etiquetas, X, y, reg):
 
         gradW2 = gradW2 + delta3.T.dot(casea2) # Obtenemos el gradiente para este caso y se lo sumamos a lo que llevamos
 
-        # ----------------- ATENCION EPIC APRENDIZAJE AUTOMATICO PLAYERS ----------------------------
-        # falta por implementar el gradiente para el vector de pesos W1 = theta1. Debería ser un Array
-        # de las mismas dimensiones que W1: (401, 26), pero aun no lo he conseguido
+        delta2 = delta3.dot(theta2)*sigmoidDerivative(z2[:, i])
+        xcase = np.array(X_unos[i, :])[np.newaxis]
+        gradW1 = gradW1 + delta2[:,1:].T.dot(xcase)
+
 
     gradW2 = gradW2/nMuestras #Normalizamos el valor
-
+    gradW1 = gradW1/nMuestras
     return cost, (gradW1, gradW2) # retornamos el coste y los 2 gradientes
 
 # Devuelve la matriz Y de tamaño (nMuestras, nEtiquetas) con filas con todo a 0 menos 1 caso a 1.
