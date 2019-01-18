@@ -66,7 +66,7 @@ def checkNNGradients(costNN, reg_param):
     y = [(i % num_labels) for i in range(m)]
 
     # Unroll parameters
-    nn_params = np.append(Theta1, Theta2).reshape(-1)
+    nn_params = np.hstack((np.ravel(Theta1), np.ravel(Theta2)))
 
     # Compute Cost
     cost, grad = costNN(nn_params,
@@ -81,7 +81,6 @@ def checkNNGradients(costNN, reg_param):
                       X, y, reg_param)[0]
 
     numgrad = computeNumericalGradient(reduced_cost_func, nn_params)
-
     # Check two gradients
     np.testing.assert_almost_equal(grad, numgrad)
     return (grad - numgrad)

@@ -4,6 +4,8 @@ import displayData as dp
 from scipy.io import loadmat
 import matplotlib.pyplot as plt
 
+import checkNNGradients as check
+
 
 # Definicion de funciones -------------------------------------------------------------------------
 def sigmoid(z):
@@ -22,10 +24,19 @@ def frontProp(thetas1, thetas2, X):
 
 #CostFun calcula el coste ponderado de una entrada usando front-propagation
 def costFun(X, y, theta1, theta2,  reg):
+    #Here we assert that we can operate with the parameters
+    X = np.array(X)
+    y = np.array(y)
+    muestras = len(y)
+
+    theta1 = np.array(theta1)
+    theta2 = np.array(theta2)
+
     hipo  = frontProp(theta1, theta2, X)[3]
-    muestras = y.shape[0]
     cost = np.sum((-y.T)*(np.log(hipo)) - (1-y.T)*(np.log(1- hipo)))/muestras
-    regcost = ((np.sum(theta1**2)+np.sum(theta2**2))*reg)/(2*muestras)
+
+    regcost = np.sum(np.power(theta1, 2)) + np.sum(np.power(theta2, 2))
+    regcost = regcost *(reg/(2*muestras))
     return cost + regcost
 
 # Este algoritmo calcula el coste de la red neuronal y distribuye el coste entre las neuronas.
@@ -37,12 +48,10 @@ def backprop(params_rn, num_entradas, num_ocultas, num_etiquetas, X, y, reg):
     # Array con los thetas de la red.
     # Dimensiones (num_entradas, num_etiquetas)
     X_unos = np.hstack([np.ones((len(X), 1), dtype = np.int), X])
-
+    y = np.array(y)
 
     # Computamos el coste con los thetas obtenidos haciendo uso de la funcion cosfun
     cost = costFun(X_unos, y, theta1, theta2, reg)
-
-    deriv = sigmoidDerivative(theta1.dot(X_unos.T))
 
     z2, a2, z3, a3 = frontProp(theta1, theta2, X_unos)
 
@@ -60,7 +69,7 @@ def backprop(params_rn, num_entradas, num_ocultas, num_etiquetas, X, y, reg):
     gradW1 = gradW1/nMuestras
 
 
-    return cost, (gradW1, gradW2) # retornamos el coste y los 2 gradientes
+    return cost, np.concatenate((gradW1, gradW2), axis = None) # retornamos el coste y los 2 gradientes
 
 # Devuelve la matriz Y de tamaño (nMuestras, nEtiquetas) con filas con todo a 0 menos 1 caso a 1.
 def getYMatrix(Y, nMuestras, nEtiquetas):
@@ -92,6 +101,8 @@ weights = loadmat('ex4weights.mat')
 theta1, theta2 = weights['Theta1'], weights ['Theta2']
 
 
-
 params = np.hstack((np.ravel(theta1), np.ravel(theta2)))
-print(backprop(params,X.shape[1], 25, 10, X, Y_Mat, 1)[0])
+print(backprop(params,X.shape[1], 25, 10, X, Y_Mat, 0.7)[0])
+print(check.checkNNGradients(backprop, 0.7))
+
+#print(check.checkNNGradients(backprop, 1))
