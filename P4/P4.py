@@ -35,8 +35,9 @@ def costFun(X, y, theta1, theta2,  reg):
     hipo  = frontProp(theta1, theta2, X)[3]
     cost = np.sum((-y.T)*(np.log(hipo)) - (1-y.T)*(np.log(1- hipo)))/muestras
 
-    regcost = np.sum(np.power(theta1, 2)) + np.sum(np.power(theta2, 2))
-    regcost = regcost *(reg/(2*muestras))
+    regcost = np.sum(np.power(theta1[1:, 1:], 2)) + np.sum(np.power(theta2[:,1:], 2))
+    regcost = regcost * (reg/(2*muestras))
+
     return cost + regcost
 
 # Este algoritmo calcula el coste de la red neuronal y distribuye el coste entre las neuronas.
@@ -102,7 +103,7 @@ theta1, theta2 = weights['Theta1'], weights ['Theta2']
 
 
 params = np.hstack((np.ravel(theta1), np.ravel(theta2)))
-print(backprop(params,X.shape[1], 25, 10, X, Y_Mat, 0.7)[0])
+print(backprop(params,X.shape[1], 25, 10, X, Y_Mat, 1)[0])
 print(check.checkNNGradients(backprop, 0.7))
 
 #print(check.checkNNGradients(backprop, 1))
