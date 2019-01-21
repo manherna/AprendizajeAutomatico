@@ -41,34 +41,38 @@ def costFun(X, y, theta1, theta2,  reg):
     return cost + regcost
 
 # Este algoritmo calcula el coste de la red neuronal y distribuye el coste entre las neuronas.
-def backprop(params_rn, num_entradas, num_ocultas, num_etiquetas, X, y, reg):
+def backprop(params_rn, num_entradas, num_ocultas, num_etiquetas, X, y, reg):    
     theta1 = np.reshape(params_rn[:num_ocultas *(num_entradas + 1)],(num_ocultas, (num_entradas+1)))
     theta1 = np.insert(theta1,0,1,axis = 0) # Theta1 es un array de num_ocultas +1, num_entradas
+    
     # theta2 es un array de (num_etiquetas, num_ocultas)
     theta2 = np.reshape(params_rn[num_ocultas*(num_entradas + 1): ], (num_etiquetas,(num_ocultas+1)))
     # Array con los thetas de la red.
     # Dimensiones (num_entradas, num_etiquetas)
-    X_unos = np.hstack([np.ones((len(X), 1), dtype = np.int), X])
+    X_unos = np.hstack([np.ones((len(X), 1), dtype = np.int), X])    
     y = np.array(y)
 
     # Computamos el coste con los thetas obtenidos haciendo uso de la funcion cosfun
     cost = costFun(X_unos, y, theta1, theta2, reg)
 
-    z2, a2, z3, a3 = frontProp(theta1, theta2, X_unos)
-
+    #Backprop
+    #Pasada hacia adelante
+    z2, a2, z3, a3 = frontProp(theta1, theta2, X_unos)    
+    
     gradW2 = np.zeros(theta2.shape)
     gradW1 = np.zeros(theta1[1:,].shape)
 
-    delta3 = -(y.T-a3)
+    delta3 = a3 - y.T
     delta2 = delta3.T.dot(theta2)*sigmoidDerivative(z2.T)
 
-    gradW2 = delta3.dot(a2.T)
+    gradW2 = delta3.dot(a2.T) 
     gradW1 = delta2[:, 1:].T.dot(X_unos)
 
-
-    gradW2 = gradW2/nMuestras #Normalizamos el valor
     gradW1 = gradW1/nMuestras
+    gradW2 = gradW2/nMuestras
 
+    #cosa1 = (1/nMuestras)*gradW1 + (1/nMuestras)*np.append(np.zeros(shape=(theta1.shape[0],1)), theta1[:,1:], axis=1)
+    #cosa2 = (1/nMuestras)*gradW2 + (1/nMuestras)*np.append(np.zeros(shape=(theta2.shape[0],1)), theta2[:,1:], axis=1)
 
     return cost, np.concatenate((gradW1, gradW2), axis = None) # retornamos el coste y los 2 gradientes
 
