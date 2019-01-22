@@ -15,7 +15,7 @@ def sigmoidDerivative(z):
     return sigmoid(z)*(1.0-sigmoid(z))
 
 # Es realmente la función hipótesis. Dada una entrada X, y una red neuronal (thetas), calcula una salida
-def frontProp(thetas1, thetas2, X):
+def forwardProp(thetas1, thetas2, X):
     z2 = thetas1.dot(X.T)
     a2 = sigmoid(z2)
     z3 = thetas2.dot(a2)
@@ -32,7 +32,7 @@ def costFun(X, y, theta1, theta2,  reg):
     theta1 = np.array(theta1)
     theta2 = np.array(theta2)
 
-    hipo  = frontProp(theta1, theta2, X)[3]
+    hipo  = forwardProp(theta1, theta2, X)[3]
     cost = np.sum((-y.T)*(np.log(hipo)) - (1-y.T)*(np.log(1- hipo)))/muestras
 
     regcost = np.sum(np.power(theta1[1:, 1:], 2)) + np.sum(np.power(theta2[:,1:], 2))
@@ -44,21 +44,26 @@ def costFun(X, y, theta1, theta2,  reg):
 def backprop(params_rn, num_entradas, num_ocultas, num_etiquetas, X, y, reg):
     theta1 = np.reshape(params_rn[:num_ocultas *(num_entradas + 1)],(num_ocultas, (num_entradas+1)))
     theta1 = np.insert(theta1,0,1,axis = 0) # Theta1 es un array de num_ocultas +1, num_entradas
+
     # theta2 es un array de (num_etiquetas, num_ocultas)
     theta2 = np.reshape(params_rn[num_ocultas*(num_entradas + 1): ], (num_etiquetas,(num_ocultas+1)))
     
     X_unos = np.hstack([np.ones((len(X), 1), dtype = np.int), X])
     y = np.array(y)
 
+    nMuestras = len(X)
     # Computamos el coste con los thetas obtenidos haciendo uso de la funcion cosfun
     cost = costFun(X_unos, y, theta1, theta2, reg)
 
-    z2, a2, z3, a3 = frontProp(theta1, theta2, X_unos)
+    #Backprop
+    #Pasada hacia adelante
+    z2, a2, z3, a3 = forwardProp(theta1, theta2, X_unos)
 
     
     gradW2 = np.zeros(theta2.shape)
     gradW1 = np.zeros(theta1[1:,].shape)
 
+<<<<<<< HEAD
     delta3 = (a3- y.T)
     print(delta3[0])
     # cambiar sigmopidDerivaive por activationderivative
@@ -67,6 +72,17 @@ def backprop(params_rn, num_entradas, num_ocultas, num_etiquetas, X, y, reg):
     gradW2 = (delta3.dot(a2.T))/nMuestras
     
     gradW1 = (delta2[:, 1:].T.dot(X_unos))/nMuestras
+=======
+    delta3 = a3 - y.T
+    delta2 = theta2.T.dot(delta3)*sigmoidDerivative(z2) #(capa2, nmuestras)
+
+
+    gradW2 = (delta3.dot(a2.T))/nMuestras
+    gradW1 = (delta2[1:, :].dot(X_unos))/nMuestras
+
+    #cosa1 = (1/nMuestras)*gradW1 + (1/nMuestras)*np.append(np.zeros(shape=(theta1.shape[0],1)), theta1[:,1:], axis=1)
+    #cosa2 = (1/nMuestras)*gradW2 + (1/nMuestras)*np.append(np.zeros(shape=(theta2.shape[0],1)), theta2[:,1:], axis=1)
+>>>>>>> eafd6dab15fa9c1eaec23b954d241b56aa266de3
 
     return cost, np.concatenate((gradW1, gradW2), axis = None) # retornamos el coste y los 2 gradientes
 
@@ -102,6 +118,6 @@ theta1, theta2 = weights['Theta1'], weights ['Theta2']
 
 params = np.hstack((np.ravel(theta1), np.ravel(theta2)))
 print(backprop(params,X.shape[1], 25, 10, X, Y_Mat, 1)[0])
-print(check.checkNNGradients(backprop, 0.7))
+print(check.checkNNGradients(backprop, 1))
 
 #print(check.checkNNGradients(backprop, 1))
