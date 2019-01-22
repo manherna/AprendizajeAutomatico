@@ -59,19 +59,20 @@ def backprop(params_rn, num_entradas, num_ocultas, num_etiquetas, X, y, reg):
     z2, a2, z3, a3 = forwardProp(theta1, theta2, X_unos)
 
 
+    print(a3.shape)
+    print ("A3:\n",a3[:, 0])
+    print ("Y: \n",y.T[:,0])
 
     #Back propagation
     gradW2 = np.zeros(theta2.shape)
     gradW1 = np.zeros(theta1[1:,].shape)
 
     delta3 = np.array(a3 - y.T)   #(numetiquetas, nmuestra)
-    delta2 = (theta2.T.dot(delta3))*sigmoidDerivative(z2)      #(capa2, nmuestras)
+    delta2 = (theta2[:, 1:].T.dot(delta3))*sigmoidDerivative(z2[1:, :])      #(capa2, nmuestras)
 
 
     gradW2 = gradW2 + (delta3.dot(a2.T))*(1.0/nMuestras)
-    print(delta2[1: , :].shape)
-    print(X_unos.shape)
-    gradW1 = gradW1 + (delta2[1:, :].dot(X_unos))*(1.0/nMuestras)
+    gradW1 = gradW1 + (delta2.dot(X_unos))*(1.0/nMuestras)
 
     #cosa1 = (1/nMuestras)*gradW1 + (1/nMuestras)*np.append(np.zeros(shape=(theta1.shape[0],1)), theta1[:,1:], axis=1)
     #cosa2 = (1/nMuestras)*gradW2 + (1/nMuestras)*np.append(np.zeros(shape=(theta2.shape[0],1)), theta2[:,1:], axis=1)
@@ -107,7 +108,7 @@ theta1, theta2 = weights['Theta1'], weights ['Theta2']
 
 
 params = np.hstack((np.ravel(theta1), np.ravel(theta2)))
-print(backprop(params,X.shape[1], 25, 10, X, Y, 1)[0])
-#print(check.checkNNGradients(backprop, 1))
+#print(backprop(params,X.shape[1], 25, 10, X, Y, 1)[0])
+print(check.checkNNGradients(backprop, 1))
 
 #print(check.checkNNGradients(backprop, 1))
