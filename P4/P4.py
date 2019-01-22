@@ -12,7 +12,7 @@ def sigmoid(z):
     return 1.0/(1.0 + np.exp(-z))
 
 def sigmoidDerivative(z):
-    return sigmoid(z)*(1-sigmoid(z))
+    return sigmoid(z)*(1.0-sigmoid(z))
 
 # Es realmente la función hipótesis. Dada una entrada X, y una red neuronal (thetas), calcula una salida
 def frontProp(thetas1, thetas2, X):
@@ -46,8 +46,7 @@ def backprop(params_rn, num_entradas, num_ocultas, num_etiquetas, X, y, reg):
     theta1 = np.insert(theta1,0,1,axis = 0) # Theta1 es un array de num_ocultas +1, num_entradas
     # theta2 es un array de (num_etiquetas, num_ocultas)
     theta2 = np.reshape(params_rn[num_ocultas*(num_entradas + 1): ], (num_etiquetas,(num_ocultas+1)))
-    # Array con los thetas de la red.
-    # Dimensiones (num_entradas, num_etiquetas)
+    
     X_unos = np.hstack([np.ones((len(X), 1), dtype = np.int), X])
     y = np.array(y)
 
@@ -56,19 +55,18 @@ def backprop(params_rn, num_entradas, num_ocultas, num_etiquetas, X, y, reg):
 
     z2, a2, z3, a3 = frontProp(theta1, theta2, X_unos)
 
+    
     gradW2 = np.zeros(theta2.shape)
     gradW1 = np.zeros(theta1[1:,].shape)
 
-    delta3 = -(y.T-a3)
+    delta3 = (a3- y.T)
+    print(delta3[0])
+    # cambiar sigmopidDerivaive por activationderivative
     delta2 = delta3.T.dot(theta2)*sigmoidDerivative(z2.T)
 
-    gradW2 = delta3.dot(a2.T)
-    gradW1 = delta2[:, 1:].T.dot(X_unos)
-
-
-    gradW2 = gradW2/nMuestras #Normalizamos el valor
-    gradW1 = gradW1/nMuestras
-
+    gradW2 = (delta3.dot(a2.T))/nMuestras
+    
+    gradW1 = (delta2[:, 1:].T.dot(X_unos))/nMuestras
 
     return cost, np.concatenate((gradW1, gradW2), axis = None) # retornamos el coste y los 2 gradientes
 
