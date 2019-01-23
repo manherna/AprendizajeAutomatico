@@ -53,7 +53,7 @@ def checkNNGradients(costNN, reg_param):
     input_layer_size = 3
     hidden_layer_size = 5
     num_labels = 3
-    m = 15
+    m = 5
 
     # Generate some random test data
     Theta1 = debugInitializeWeights(hidden_layer_size, input_layer_size)
@@ -64,7 +64,7 @@ def checkNNGradients(costNN, reg_param):
 
     # Set each element of y to be in [0,num_labels]
     y = [(i % num_labels) for i in range(m)]
-
+    print(y)
     # Unroll parameters
     nn_params = np.hstack((np.ravel(Theta1), np.ravel(Theta2)))
 
@@ -84,5 +84,7 @@ def checkNNGradients(costNN, reg_param):
     # Check two gradients
     print("My gradient:\n", grad, "\n", grad.shape, "\n")
     print("Numerical gradient:\n", numgrad, numgrad.shape, "\n")
+
+
     np.testing.assert_almost_equal(grad, numgrad)
     return (grad - numgrad)
