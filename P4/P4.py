@@ -3,9 +3,8 @@ import numpy as np
 import displayData as dp
 from scipy.io import loadmat
 import matplotlib.pyplot as plt
-import scipy.optimize as opt
 import sys
-
+import scipy.optimize as opt
 import checkNNGradients as check
 
 
@@ -117,7 +116,9 @@ def NNTest (num_entradas, num_ocultas, num_etiquetas, reg, X, Y, laps):
     input = np.hstack([np.ones((len(X), 1), dtype = np.float), X])
     hipo = forwardProp(Thetas1, Thetas2, input)[3]
 
+
     Ghipo = (hipo.argmax(axis = 0))+1
+    print(Ghipo.shape)
     prec = (Ghipo == Y)*1
 
     precision = sum(prec) / len(X)
@@ -138,4 +139,4 @@ Y = np.ravel(Y)
 weights = loadmat('ex4weights.mat')
 theta1, theta2 = weights['Theta1'], weights ['Theta2']
 
-NNTest(400, 25, 16, 0.5, X, Y, 200)
+NNTest(400, 25, 10, 0.5, X, Y, 1)
