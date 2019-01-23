@@ -3,6 +3,7 @@ import numpy as np
 import displayData as dp
 from scipy.io import loadmat
 import matplotlib.pyplot as plt
+import scipy.optimize as opt
 import sys
 
 import checkNNGradients as check
@@ -51,6 +52,7 @@ def backprop(params_rn, num_entradas, num_ocultas, num_etiquetas, X, Y, reg):
 
     X_unos = np.hstack([np.ones((len(X), 1), dtype = np.float), X])
     nMuestras = len(X)
+    Y = Y -1
     y = np.zeros((nMuestras, num_etiquetas))
 
     for i in range(len(Y)):
@@ -61,25 +63,26 @@ def backprop(params_rn, num_entradas, num_ocultas, num_etiquetas, X, Y, reg):
     # Forward propagation
     z2, a2, z3, a3 = forwardProp(th1, th2, X_unos)
 
-
     delta3 = np.array(a3 - y.T)   #(numetiquetas, nmuestra)
+
+    mult = th2.T.dot(delta3)
+    mult = np.delete(mult, 0, 0)
+
     delta2 = (th2.T.dot(delta3))[1: , :] *sigmoidDerivative(z2)  #(capa2, nmuestras)
 
+    gradW1 = np.zeros(th1.shape)
+    gradW2 = np.zeros(th2.shape)
 
-    gradW1 = (delta2.dot(X_unos))
-    gradW2 = (delta3.dot(a2.T))
 
-    reg1 = np.zeros(gradW1.shape)
-    reg2 = np.zeros(gradW2.shape)
+    gradW1 = gradW1 + (delta2.dot(X_unos))
+    gradW2 = gradW2 + (delta3.dot(a2.T))
 
-    reg1 = reg*th1
-    np.vstack((np.zeros(len(reg1[0])), reg1))
+    reg1 = (reg/nMuestras)*th1
+    reg2 = (reg/nMuestras)*th2
 
-    reg2 = reg*th2
-    np.vstack((np.zeros(len(reg2[0])), reg2))
 
-    gradW1 = (gradW1 + reg1) /nMuestras
-    gradW2 = (gradW2 + reg2) /nMuestras
+    gradW1 = (gradW1/nMuestras) + reg1
+    gradW2 = (gradW2/nMuestras) + reg2
 
     return cost, np.concatenate((gradW1, gradW2), axis = None) # retornamos el coste y los 2 gradientes
 
@@ -101,6 +104,29 @@ def weightInitialize(L_in, L_out):
     return aux
 
 
+def NNTest (num_entradas, num_ocultas, num_etiquetas, reg, X, Y, laps):
+    t1 = weightInitialize(num_entradas, num_ocultas)
+    t2 = weightInitialize(num_ocultas, num_etiquetas)
+
+    params = np.hstack((np.ravel(t1), np.ravel(t2)))
+    out = opt.minimize(fun = backprop, x0 = params, args = (num_entradas, num_ocultas, num_etiquetas, X, Y, reg), method='TNC', jac = True, options = {'maxiter': laps})
+
+    Thetas1 = out.x[:(num_ocultas*(num_entradas+1))].reshape(num_ocultas,(num_entradas+1))
+    Thetas2 = out.x[(num_ocultas*(num_entradas+1)):].reshape(num_etiquetas,(num_ocultas+1))
+
+    input = np.hstack([np.ones((len(X), 1), dtype = np.float), X])
+    hipo = forwardProp(Thetas1, Thetas2, input)[3]
+
+    Ghipo = (hipo.argmax(axis = 0))+1
+    prec = (Ghipo == Y)*1
+
+    precision = sum(prec) / len(X)
+
+    print("Program precision: ", precision *100, "%")
+
+
+
+
 # Fin funciones -----------------------------------------------------------------------------------
 data = loadmat('ex4data1.mat')
 Y = data['y']  # Representa el valor real de cada ejemplo de entrenamiento de X (y para cada X)
@@ -112,12 +138,4 @@ Y = np.ravel(Y)
 weights = loadmat('ex4weights.mat')
 theta1, theta2 = weights['Theta1'], weights ['Theta2']
 
-input = int(sys.argv[1])
-
-if input == 0:
-    params = np.hstack((np.ravel(theta1), np.ravel(theta2)))
-    print(backprop(params,X.shape[1], 25, 10, X, Y, 1)[0])
-else:
-    print(check.checkNNGradients(backprop, 1))
-
-#print(check.checkNNGradients(backprop, 1))
+NNTest(400, 25, 16, 0.5, X, Y, 200)
