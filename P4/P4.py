@@ -18,6 +18,8 @@ def sigmoidDerivative(z):
 def forwardProp(thetas1, thetas2, X):
     z2 = thetas1.dot(X.T)
     a2 = sigmoid(z2)
+    tuple = (np.ones(len(a2[0])), a2)
+    a2 = np.vstack(tuple)
     z3 = thetas2.dot(a2)
     a3 = sigmoid(z3)
     return z2, a2, z3, a3
@@ -35,7 +37,7 @@ def costFun(X, y, theta1, theta2,  reg):
     hipo  = forwardProp(theta1, theta2, X)[3]
     cost = np.sum((-y.T)*(np.log(hipo)) - (1-y.T)*(np.log(1- hipo)))/muestras
 
-    regcost = np.sum(np.power(theta1[1:, 1:], 2)) + np.sum(np.power(theta2[:,1:], 2))
+    regcost = np.sum(np.power(theta1[:, 1:], 2)) + np.sum(np.power(theta2[:,1:], 2))
     regcost = regcost * (reg/(2*muestras))
 
     return cost + regcost
@@ -43,8 +45,6 @@ def costFun(X, y, theta1, theta2,  reg):
 # Este algoritmo calcula el coste de la red neuronal y distribuye el coste entre las neuronas.
 def backprop(params_rn, num_entradas, num_ocultas, num_etiquetas, X, y, reg):
     theta1 = np.reshape(params_rn[:num_ocultas *(num_entradas + 1)],(num_ocultas, (num_entradas+1)))
-    theta1 = np.insert(theta1,0,1,axis = 0) # Theta1 es un array de num_ocultas +1, num_entradas
-
     # theta2 es un array de (num_etiquetas, num_ocultas)
     theta2 = np.reshape(params_rn[num_ocultas*(num_entradas + 1): ], (num_etiquetas,(num_ocultas+1)))
 
@@ -59,23 +59,12 @@ def backprop(params_rn, num_entradas, num_ocultas, num_etiquetas, X, y, reg):
     z2, a2, z3, a3 = forwardProp(theta1, theta2, X_unos)
 
 
-    print(a3.shape)
-    print ("A3:\n",a3[:, 0])
-    print ("Y: \n",y.T[:,0])
-
-    #Back propagation
-    gradW2 = np.zeros(theta2.shape)
-    gradW1 = np.zeros(theta1[1:,].shape)
-
     delta3 = np.array(a3 - y.T)   #(numetiquetas, nmuestra)
-    delta2 = (theta2[:, 1:].T.dot(delta3))*sigmoidDerivative(z2[1:, :])      #(capa2, nmuestras)
+    delta2 = (theta2.T.dot(delta3))[1: , :]*sigmoidDerivative(z2)      #(capa2, nmuestras)
 
 
-    gradW2 = gradW2 + (delta3.dot(a2.T))*(1.0/nMuestras)
-    gradW1 = gradW1 + (delta2.dot(X_unos))*(1.0/nMuestras)
-
-    #cosa1 = (1/nMuestras)*gradW1 + (1/nMuestras)*np.append(np.zeros(shape=(theta1.shape[0],1)), theta1[:,1:], axis=1)
-    #cosa2 = (1/nMuestras)*gradW2 + (1/nMuestras)*np.append(np.zeros(shape=(theta2.shape[0],1)), theta2[:,1:], axis=1)
+    gradW1 = (delta2.dot(X_unos)) *(1/nMuestras)
+    gradW2 = (delta3.dot(a2.T)) * (1/nMuestras)
 
     return cost, np.concatenate((gradW1, gradW2), axis = None) # retornamos el coste y los 2 gradientes
 
