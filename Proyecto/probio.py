@@ -2,6 +2,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import csv
+import scipy.optimize as opt
 
 def displayData(X):
     num_plots = int(np.size(X, 0)**.5)
@@ -25,13 +26,22 @@ def displayImage(im):
     ax2.imshow(image, cmap='gray')
     return (fig2, ax2)
 
-
 file = open('Data/optdigits.tra', encoding ="utf8", errors = "ignore")
-datos = csv.reader(file)
-lineas = np.array(list(datos))
-print(len(lineas))
+data = csv.reader(file)
+lines = np.array(list(data))
 
-matrizX = lineas.T [0:-1]
+X_input = np.array(lines[:,:-1], dtype = np.int)
+Y_input = np.array(lines [:,-1:], dtype = np.int)
 
+numCases = len (X_input)
+numTags = len(np.unique(Y_input))
 
-displayImage(matrizX.T[0])
+#X matrix with normalized values from [0, 16] to [0.0, 1.0]
+
+X_N = X_input/16.0
+Y_real = np.zeros((numCases, numTags), dtype = np.int)
+for n in range(numCases):
+    Y_real[n][Y_input[n]] = 1
+    
+displayImage(X_N[0])
+print("Caca")
