@@ -51,11 +51,9 @@ def backprop(params_rn, num_entradas, num_ocultas, num_etiquetas, X, Y, reg):
 
     X_unos = np.hstack([np.ones((len(X), 1), dtype = np.float), X])
     nMuestras = len(X)
-    Y = Y -1
     y = np.zeros((nMuestras, num_etiquetas))
 
-    for i in range(len(Y)):
-        y[i][Y[i]] = 1
+    y = y + getYMatrix(Y, nMuestras, num_etiquetas)
     # Computamos el coste con los thetas obtenidos haciendo uso de la funcion cosfun
     cost = costFun(X_unos, y, th1, th2, reg)
 
@@ -92,7 +90,9 @@ def getYMatrix(Y, nMuestras, nEtiquetas):
     nY =  np.zeros((nMuestras, nEtiquetas))
     yaux = np.array(Y) -1
     for i in range(len(nY)):
-        nY[i][yaux[i]] = 1
+        z = yaux[i]
+        if(z == 10): z = 0
+        nY[i][z] = 1
     return nY
 
 #returns an initialized matrix of (1+ L_in, L_out)
@@ -139,4 +139,5 @@ Y = np.ravel(Y)
 weights = loadmat('ex4weights.mat')
 theta1, theta2 = weights['Theta1'], weights ['Theta2']
 
-NNTest(400, 25, 10, 0.5, X, Y, 1)
+#NNTest(400, 25, 10, 0.5, X, Y, 100)
+check.checkNNGradients(backprop, 1)
