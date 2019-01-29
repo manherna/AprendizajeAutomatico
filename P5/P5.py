@@ -165,7 +165,7 @@ def dibuja_curva_aprendizaje_polinomio(_lamb=0.):
 
 Theta = np.zeros((X_poli_norm.shape[1],1))
 #lambdas = [0., 0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1., 3., 10.]
-lambdas = np.linspace(0,5,20)
+lambdas = np.linspace(0,5,50)
 vector_train, vector_val = [], []
 for lamb in lambdas:
     train_aux = generar_dimension(X_unos, grado_polinomio)
