@@ -139,5 +139,5 @@ Y = np.ravel(Y)
 weights = loadmat('ex4weights.mat')
 theta1, theta2 = weights['Theta1'], weights ['Theta2']
 
-#NNTest(400, 25, 10, 0.5, X, Y, 100)
-check.checkNNGradients(backprop, 1)
+NNTest(400, 25, 10, 1, X, Y, 70)
+#check.checkNNGradients(backprop, 1)
