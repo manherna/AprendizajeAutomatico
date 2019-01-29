@@ -1,0 +1,593 @@
+
+% Default to the notebook output style
+
+    
+
+
+% Inherit from the specified cell style.
+
+
+
+
+    
+\documentclass[11pt]{article}
+
+    
+    
+    \usepackage[T1]{fontenc}
+    % Nicer default font (+ math font) than Computer Modern for most use cases
+    \usepackage{mathpazo}
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % We will generate all images so they have a width \maxwidth. This means
+    % that they will get their normal width if they fit onto the page, but
+    % are scaled down if they would overflow the margins.
+    \makeatletter
+    \def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth
+    \else\Gin@nat@width\fi}
+    \makeatother
+    \let\Oldincludegraphics\includegraphics
+    % Set max figure width to be 80% of text width, for now hardcoded.
+    \renewcommand{\includegraphics}[1]{\Oldincludegraphics[width=.8\maxwidth]{#1}}
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionLabelFormat{nolabel}{}
+    \captionsetup{labelformat=nolabel}
+
+    \usepackage{adjustbox} % Used to constrain images to a maximum size 
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+    \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
+    \usepackage[utf8x]{inputenc} % Allow utf-8 characters in the tex document
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics 
+                         % to support a larger range 
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    
+
+    
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+    
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    
+    
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatability definitions
+    \def\gt{>}
+    \def\lt{<}
+    % Document parameters
+    \title{P4}
+    
+    
+    
+
+    % Pygments definitions
+    
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\expandafter\def\csname PY@tok@w\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\expandafter\def\csname PY@tok@c\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.74,0.48,0.00}{##1}}}
+\expandafter\def\csname PY@tok@k\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\expandafter\def\csname PY@tok@o\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ow\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@nn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@ne\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.82,0.25,0.23}{##1}}}
+\expandafter\def\csname PY@tok@nv\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@no\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ni\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.60,0.60,0.60}{##1}}}
+\expandafter\def\csname PY@tok@na\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.49,0.56,0.16}{##1}}}
+\expandafter\def\csname PY@tok@nt\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@nd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\expandafter\def\csname PY@tok@s\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sd\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@si\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@se\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sr\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.40,0.53}{##1}}}
+\expandafter\def\csname PY@tok@ss\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sx\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@m\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@gh\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gu\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@gd\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.63,0.00}{##1}}}
+\expandafter\def\csname PY@tok@gr\endcsname{\def\PY@tc##1{\textcolor[rgb]{1.00,0.00,0.00}{##1}}}
+\expandafter\def\csname PY@tok@ge\endcsname{\let\PY@it=\textit}
+\expandafter\def\csname PY@tok@gs\endcsname{\let\PY@bf=\textbf}
+\expandafter\def\csname PY@tok@gp\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\expandafter\def\csname PY@tok@go\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.53,0.53,0.53}{##1}}}
+\expandafter\def\csname PY@tok@gt\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\expandafter\def\csname PY@tok@err\endcsname{\def\PY@bc##1{\setlength{\fboxsep}{0pt}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}
+\expandafter\def\csname PY@tok@kc\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kd\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kn\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@kr\endcsname{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@bp\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\expandafter\def\csname PY@tok@fm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\expandafter\def\csname PY@tok@vc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vg\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@vm\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\expandafter\def\csname PY@tok@sa\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sc\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@dl\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@s2\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@sh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@s1\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\expandafter\def\csname PY@tok@mb\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mf\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mh\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mi\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@il\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@mo\endcsname{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\expandafter\def\csname PY@tok@ch\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cm\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cpf\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@c1\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+\expandafter\def\csname PY@tok@cs\endcsname{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.25,0.50,0.50}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % Exact colors from NB
+    \definecolor{incolor}{rgb}{0.0, 0.0, 0.5}
+    \definecolor{outcolor}{rgb}{0.545, 0.0, 0.0}
+
+
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy 
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+    \begin{document}
+    
+    
+    \maketitle
+    
+    
+
+    
+    \section{Practica 4 Aprendizaje Automático y Minería de
+Datos}\label{practica-4-aprendizaje-automuxe1tico-y-mineruxeda-de-datos}
+
+\subsubsection{Mario Jimenez y Manuel
+Hernández}\label{mario-jimenez-y-manuel-hernuxe1ndez}
+
+    Esta práctica consiste en reconocer digitos manuscritos mediante una red
+neuronal.
+
+    \subsection{Inclusión de librerías}\label{inclusiuxf3n-de-libreruxedas}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}35}]:} \PY{k+kn}{import} \PY{n+nn}{displayData}
+         \PY{k+kn}{import} \PY{n+nn}{numpy} \PY{k}{as} \PY{n+nn}{np}
+         \PY{k+kn}{import} \PY{n+nn}{displayData} \PY{k}{as} \PY{n+nn}{dp}
+         \PY{k+kn}{from} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{io} \PY{k}{import} \PY{n}{loadmat}
+         \PY{k+kn}{import} \PY{n+nn}{matplotlib}\PY{n+nn}{.}\PY{n+nn}{pyplot} \PY{k}{as} \PY{n+nn}{plt}
+         \PY{k+kn}{import} \PY{n+nn}{scipy}\PY{n+nn}{.}\PY{n+nn}{optimize} \PY{k}{as} \PY{n+nn}{opt}
+         \PY{k+kn}{import} \PY{n+nn}{checkNNGradients} \PY{k}{as} \PY{n+nn}{check}
+\end{Verbatim}
+
+
+    \subsection{Lectura de datos}\label{lectura-de-datos}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}36}]:} \PY{n}{data} \PY{o}{=} \PY{n}{loadmat}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ex4data1.mat}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{Y} \PY{o}{=} \PY{n}{data}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{y}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}  \PY{c+c1}{\PYZsh{} Representa el valor real de cada ejemplo de entrenamiento de X (y para cada X)}
+         \PY{n}{X} \PY{o}{=} \PY{n}{data}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{X}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}  \PY{c+c1}{\PYZsh{} Cada fila de X representa una escala de grises de 20x20 desplegada linearmente (400 pixeles)}
+         \PY{n}{nMuestras} \PY{o}{=} \PY{n+nb}{len}\PY{p}{(}\PY{n}{X}\PY{p}{)}
+         \PY{n}{Y} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{ravel}\PY{p}{(}\PY{n}{Y}\PY{p}{)}
+\end{Verbatim}
+
+
+    Las entradas son mapas de bits de 20x20, que se desdoblan en columnas de
+400 elementos a los que se les asocia un valor.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}37}]:} \PY{n+nb}{print}\PY{p}{(}\PY{n}{Y}\PY{p}{[}\PY{l+m+mi}{4999}\PY{p}{]}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{figure}\PY{p}{(}\PY{p}{)}
+         \PY{n}{dp}\PY{o}{.}\PY{n}{displayImage}\PY{p}{(}\PY{n}{X}\PY{p}{[}\PY{l+m+mi}{4999}\PY{p}{]}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{savefig}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Input\PYZus{}sample}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+         \PY{n}{plt}\PY{o}{.}\PY{n}{show}\PY{p}{(}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+9
+
+    \end{Verbatim}
+
+    
+    \begin{verbatim}
+<Figure size 432x288 with 0 Axes>
+    \end{verbatim}
+
+    
+    \begin{center}
+    \adjustimage{max size={0.9\linewidth}{0.9\paperheight}}{output_7_2.png}
+    \end{center}
+    { \hspace*{\fill} \\}
+    
+    \subsubsection{Carga de matrices de pesos
+preentrenadas}\label{carga-de-matrices-de-pesos-preentrenadas}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}38}]:} \PY{n}{weights} \PY{o}{=} \PY{n}{loadmat}\PY{p}{(}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{ex4weights.mat}\PY{l+s+s1}{\PYZsq{}}\PY{p}{)}
+         \PY{n}{theta1}\PY{p}{,} \PY{n}{theta2} \PY{o}{=} \PY{n}{weights}\PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Theta1}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}\PY{p}{,} \PY{n}{weights} \PY{p}{[}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{Theta2}\PY{l+s+s1}{\PYZsq{}}\PY{p}{]}
+\end{Verbatim}
+
+
+    \subsection{Función de activación y
+derivada}\label{funciuxf3n-de-activaciuxf3n-y-derivada}
+
+En esta red neuronal utilizaremos la función sigmoide como función de
+activación para las neuronas.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}39}]:} \PY{k}{def} \PY{n+nf}{sigmoid}\PY{p}{(}\PY{n}{z}\PY{p}{)}\PY{p}{:}
+             \PY{k}{return} \PY{l+m+mi}{1}\PY{o}{/}\PY{p}{(}\PY{l+m+mi}{1} \PY{o}{+} \PY{n}{np}\PY{o}{.}\PY{n}{exp}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{n}{z}\PY{p}{)}\PY{p}{)}
+         \PY{k}{def} \PY{n+nf}{sigmoidDerivative}\PY{p}{(}\PY{n}{z}\PY{p}{)}\PY{p}{:}
+             \PY{n}{z} \PY{o}{=} \PY{n}{sigmoid}\PY{p}{(}\PY{n}{z}\PY{p}{)}
+             \PY{k}{return} \PY{n}{z}\PY{o}{*}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{z}\PY{p}{)}
+         
+         \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Sigmoid (0.25) = }\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{n}{sigmoid}\PY{p}{(}\PY{l+m+mf}{0.25}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Sigmoid (0.25) =  0.5621765008857981
+
+    \end{Verbatim}
+
+    \subsection{Forward propagation y función de
+coste}\label{forward-propagation-y-funciuxf3n-de-coste}
+
+La función de hipótesis o de forward propagation utiliza un valor de
+entrada(401 entradas, con termino de sesgo ya añadido) para predecir una
+salida mediante una matriz de pesos y una función de activación. Además,
+durante el proceso, añadirá el termino de sesgo o \emph{bias} para el
+computo final. Devolvemos todas las matrices intermedias, ya que nos
+podrán ser de utilidad.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}40}]:} \PY{k}{def} \PY{n+nf}{forwardProp}\PY{p}{(}\PY{n}{thetas1}\PY{p}{,} \PY{n}{thetas2}\PY{p}{,} \PY{n}{X}\PY{p}{)}\PY{p}{:}
+             \PY{n}{z2} \PY{o}{=} \PY{n}{thetas1}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{X}\PY{o}{.}\PY{n}{T}\PY{p}{)}
+             \PY{n}{a2} \PY{o}{=} \PY{n}{sigmoid}\PY{p}{(}\PY{n}{z2}\PY{p}{)}
+             \PY{n+nb}{tuple} \PY{o}{=} \PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{ones}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{a2}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{p}{)}\PY{p}{)}\PY{p}{,} \PY{n}{a2}\PY{p}{)}
+             \PY{n}{a2} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{vstack}\PY{p}{(}\PY{n+nb}{tuple}\PY{p}{)}
+             \PY{n}{z3} \PY{o}{=} \PY{n}{thetas2}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{a2}\PY{p}{)}
+             \PY{n}{a3} \PY{o}{=} \PY{n}{sigmoid}\PY{p}{(}\PY{n}{z3}\PY{p}{)}
+             \PY{k}{return} \PY{n}{z2}\PY{p}{,} \PY{n}{a2}\PY{p}{,} \PY{n}{z3}\PY{p}{,} \PY{n}{a3}
+         
+         \PY{n}{X\PYZus{}aux} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{hstack}\PY{p}{(}\PY{p}{[}\PY{n}{np}\PY{o}{.}\PY{n}{ones}\PY{p}{(}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{X}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,} \PY{n}{dtype} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{float}\PY{p}{)}\PY{p}{,} \PY{n}{X}\PY{p}{]}\PY{p}{)}
+         \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Valor predicho para el elemento 0 de X según la hipótesis: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{,}\PY{p}{(}\PY{n}{forwardProp}\PY{p}{(}\PY{n}{theta1}\PY{p}{,} \PY{n}{theta2}\PY{p}{,} \PY{n}{X\PYZus{}aux}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{]}\PY{p}{)}\PY{o}{.}\PY{n}{T}\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}\PY{o}{.}\PY{n}{argmax}\PY{p}{(}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Valor predicho para el elemento 0 de X según la hipótesis:  9
+
+    \end{Verbatim}
+
+    En cuanto a la función de coste, implementaremos la función de coste con
+regularización. Como entrada a dicha función, hemos de preparar un
+vector de Y distinto al recibido. Será una matriz de
+\emph{(numElementos, numEtiquetas)} donde cada fila corresponde a un
+caso. Cada fila tendrá todos los valores a cero menos el valor real que
+representa ese caso, que estará a 1.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}41}]:} \PY{k}{def} \PY{n+nf}{costFun}\PY{p}{(}\PY{n}{X}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{theta1}\PY{p}{,} \PY{n}{theta2}\PY{p}{,}  \PY{n}{reg}\PY{p}{)}\PY{p}{:}
+             \PY{c+c1}{\PYZsh{}Here we assert that we can operate with the parameters}
+             \PY{n}{X} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{X}\PY{p}{)}
+             \PY{n}{y} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{y}\PY{p}{)}
+             \PY{n}{muestras} \PY{o}{=} \PY{n+nb}{len}\PY{p}{(}\PY{n}{y}\PY{p}{)}
+         
+             \PY{n}{theta1} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{theta1}\PY{p}{)}
+             \PY{n}{theta2} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{theta2}\PY{p}{)}
+         
+             \PY{n}{hipo}  \PY{o}{=} \PY{n}{forwardProp}\PY{p}{(}\PY{n}{theta1}\PY{p}{,} \PY{n}{theta2}\PY{p}{,} \PY{n}{X}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{]}
+             \PY{n}{cost} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{n}{y}\PY{o}{.}\PY{n}{T}\PY{p}{)}\PY{o}{*}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{log}\PY{p}{(}\PY{n}{hipo}\PY{p}{)}\PY{p}{)} \PY{o}{\PYZhy{}} \PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}}\PY{n}{y}\PY{o}{.}\PY{n}{T}\PY{p}{)}\PY{o}{*}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{log}\PY{p}{(}\PY{l+m+mi}{1}\PY{o}{\PYZhy{}} \PY{n}{hipo}\PY{p}{)}\PY{p}{)}\PY{p}{)}\PY{o}{/}\PY{n}{muestras}
+         
+             \PY{n}{regcost} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{power}\PY{p}{(}\PY{n}{theta1}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)} \PY{o}{+} \PY{n}{np}\PY{o}{.}\PY{n}{sum}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{power}\PY{p}{(}\PY{n}{theta2}\PY{p}{[}\PY{p}{:}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}\PY{p}{,} \PY{l+m+mi}{2}\PY{p}{)}\PY{p}{)}
+             \PY{n}{regcost} \PY{o}{=} \PY{n}{regcost} \PY{o}{*} \PY{p}{(}\PY{n}{reg}\PY{o}{/}\PY{p}{(}\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{muestras}\PY{p}{)}\PY{p}{)}
+         
+             \PY{k}{return} \PY{n}{cost} \PY{o}{+} \PY{n}{regcost}
+         
+         \PY{k}{def} \PY{n+nf}{getYMatrix}\PY{p}{(}\PY{n}{Y}\PY{p}{,} \PY{n}{nEtiquetas}\PY{p}{)}\PY{p}{:}
+             \PY{n}{nY} \PY{o}{=}  \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{Y}\PY{p}{)}\PY{p}{,} \PY{n}{nEtiquetas}\PY{p}{)}\PY{p}{)}
+             \PY{n}{yaux} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{Y}\PY{p}{)} \PY{o}{\PYZhy{}}\PY{l+m+mi}{1}
+             \PY{k}{for} \PY{n}{i} \PY{o+ow}{in} \PY{n+nb}{range}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{nY}\PY{p}{)}\PY{p}{)}\PY{p}{:}
+                 \PY{n}{z} \PY{o}{=} \PY{n}{yaux}\PY{p}{[}\PY{n}{i}\PY{p}{]}
+                 \PY{k}{if}\PY{p}{(}\PY{n}{z} \PY{o}{==} \PY{l+m+mi}{10}\PY{p}{)}\PY{p}{:} \PY{n}{z} \PY{o}{=} \PY{l+m+mi}{0}
+                 \PY{n}{nY}\PY{p}{[}\PY{n}{i}\PY{p}{]}\PY{p}{[}\PY{n}{z}\PY{p}{]} \PY{o}{=} \PY{l+m+mi}{1}
+             \PY{k}{return} \PY{n}{nY}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}42}]:} \PY{n}{Y\PYZus{}aux} \PY{o}{=} \PY{n}{getYMatrix}\PY{p}{(}\PY{n}{Y}\PY{p}{,}\PY{l+m+mi}{10}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}43}]:} \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{El coste con thetas entrenados es: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{costFun}\PY{p}{(}\PY{n}{X\PYZus{}aux}\PY{p}{,} \PY{n}{Y\PYZus{}aux}\PY{p}{,} \PY{n}{theta1}\PY{p}{,} \PY{n}{theta2}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+El coste con thetas entrenados es:  0.3837698590909236
+
+    \end{Verbatim}
+
+    \subsection{Backpropagation}\label{backpropagation}
+
+Función de backpropagation para repartir el error entre las neuronas de
+la red neuronal. Comienza desde la ultima capa y desde esa desciende
+hasta la penúltima, ya que no se puede repartir error para la capa de
+entrada.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}44}]:} \PY{k}{def} \PY{n+nf}{backprop}\PY{p}{(}\PY{n}{params\PYZus{}rn}\PY{p}{,} \PY{n}{num\PYZus{}entradas}\PY{p}{,} \PY{n}{num\PYZus{}ocultas}\PY{p}{,} \PY{n}{num\PYZus{}etiquetas}\PY{p}{,} \PY{n}{X}\PY{p}{,} \PY{n}{Y}\PY{p}{,} \PY{n}{reg}\PY{p}{)}\PY{p}{:}
+             \PY{n}{th1} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{n}{params\PYZus{}rn}\PY{p}{[}\PY{p}{:}\PY{n}{num\PYZus{}ocultas} \PY{o}{*}\PY{p}{(}\PY{n}{num\PYZus{}entradas} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{]}\PY{p}{,}\PY{p}{(}\PY{n}{num\PYZus{}ocultas}\PY{p}{,} \PY{p}{(}\PY{n}{num\PYZus{}entradas}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+             \PY{c+c1}{\PYZsh{} theta2 es un array de (num\PYZus{}etiquetas, num\PYZus{}ocultas)}
+             \PY{n}{th2} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{n}{params\PYZus{}rn}\PY{p}{[}\PY{n}{num\PYZus{}ocultas}\PY{o}{*}\PY{p}{(}\PY{n}{num\PYZus{}entradas} \PY{o}{+} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{:} \PY{p}{]}\PY{p}{,} \PY{p}{(}\PY{n}{num\PYZus{}etiquetas}\PY{p}{,}\PY{p}{(}\PY{n}{num\PYZus{}ocultas}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+             
+             \PY{n}{X\PYZus{}unos} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{hstack}\PY{p}{(}\PY{p}{[}\PY{n}{np}\PY{o}{.}\PY{n}{ones}\PY{p}{(}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{X}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,} \PY{n}{dtype} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{float}\PY{p}{)}\PY{p}{,} \PY{n}{X}\PY{p}{]}\PY{p}{)}
+             \PY{n}{nMuestras} \PY{o}{=} \PY{n+nb}{len}\PY{p}{(}\PY{n}{X}\PY{p}{)}
+             
+             \PY{n}{y} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{p}{(}\PY{n}{nMuestras}\PY{p}{,} \PY{n}{num\PYZus{}etiquetas}\PY{p}{)}\PY{p}{)}
+             \PY{n}{y} \PY{o}{=} \PY{n}{getYMatrix}\PY{p}{(}\PY{n}{Y}\PY{p}{,} \PY{n}{num\PYZus{}etiquetas}\PY{p}{)}
+             
+             \PY{n}{coste} \PY{o}{=} \PY{n}{costFun}\PY{p}{(}\PY{n}{X\PYZus{}unos}\PY{p}{,} \PY{n}{y}\PY{p}{,} \PY{n}{th1}\PY{p}{,} \PY{n}{th2}\PY{p}{,} \PY{n}{reg}\PY{p}{)}
+             
+             
+             
+             \PY{c+c1}{\PYZsh{}Backpropagation}
+             
+             \PY{c+c1}{\PYZsh{} Forward propagation para obtener una hipótesis y los valores intermedios}
+             \PY{c+c1}{\PYZsh{} de la red neuronal}
+             \PY{n}{z2}\PY{p}{,} \PY{n}{a2}\PY{p}{,} \PY{n}{z3}\PY{p}{,} \PY{n}{a3} \PY{o}{=} \PY{n}{forwardProp}\PY{p}{(}\PY{n}{th1}\PY{p}{,} \PY{n}{th2}\PY{p}{,} \PY{n}{X\PYZus{}unos}\PY{p}{)}
+             
+             \PY{n}{gradW1} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{n}{th1}\PY{o}{.}\PY{n}{shape}\PY{p}{)}
+             \PY{n}{gradW2} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{zeros}\PY{p}{(}\PY{n}{th2}\PY{o}{.}\PY{n}{shape}\PY{p}{)}
+             
+             \PY{c+c1}{\PYZsh{} Coste por capas}
+             \PY{n}{delta3} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{array}\PY{p}{(}\PY{n}{a3} \PY{o}{\PYZhy{}} \PY{n}{y}\PY{o}{.}\PY{n}{T}\PY{p}{)}
+             \PY{n}{delta2} \PY{o}{=} \PY{n}{th2}\PY{o}{.}\PY{n}{T}\PY{p}{[}\PY{l+m+mi}{1}\PY{p}{:}\PY{p}{,}\PY{p}{:}\PY{p}{]}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{delta3}\PY{p}{)}\PY{o}{*}\PY{n}{sigmoidDerivative}\PY{p}{(}\PY{n}{z2}\PY{p}{)}
+         
+             
+             \PY{c+c1}{\PYZsh{} Acumulación de gradiente}
+             \PY{n}{gradW1} \PY{o}{=} \PY{n}{gradW1} \PY{o}{+} \PY{p}{(}\PY{n}{delta2}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{X\PYZus{}unos}\PY{p}{)}\PY{p}{)}
+             \PY{n}{gradW2} \PY{o}{=} \PY{n}{gradW2} \PY{o}{+} \PY{p}{(}\PY{n}{delta3}\PY{o}{.}\PY{n}{dot}\PY{p}{(}\PY{n}{a2}\PY{o}{.}\PY{n}{T}\PY{p}{)}\PY{p}{)}
+         
+             
+             \PY{n}{G1} \PY{o}{=} \PY{n}{gradW1}\PY{o}{/}\PY{n+nb}{float}\PY{p}{(}\PY{n}{nMuestras}\PY{p}{)}
+             \PY{n}{G2} \PY{o}{=} \PY{n}{gradW2}\PY{o}{/}\PY{n+nb}{float}\PY{p}{(}\PY{n}{nMuestras}\PY{p}{)}
+         
+             \PY{c+c1}{\PYZsh{}suma definitiva}
+             \PY{n}{G1}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{:} \PY{p}{]} \PY{o}{=} \PY{n}{G1}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]} \PY{o}{+} \PY{p}{(}\PY{n+nb}{float}\PY{p}{(}\PY{n}{reg}\PY{p}{)}\PY{o}{/}\PY{n+nb}{float}\PY{p}{(}\PY{n}{nMuestras}\PY{p}{)}\PY{p}{)}\PY{o}{*}\PY{n}{th1}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}
+             \PY{n}{G2}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{:} \PY{p}{]} \PY{o}{=} \PY{n}{G2}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]} \PY{o}{+} \PY{p}{(}\PY{n+nb}{float}\PY{p}{(}\PY{n}{reg}\PY{p}{)}\PY{o}{/}\PY{n+nb}{float}\PY{p}{(}\PY{n}{nMuestras}\PY{p}{)}\PY{p}{)}\PY{o}{*}\PY{n}{th2}\PY{p}{[}\PY{p}{:}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{:}\PY{p}{]}
+             
+             
+             \PY{n}{gradients} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{concatenate}\PY{p}{(}\PY{p}{(}\PY{n}{G1}\PY{p}{,} \PY{n}{G2}\PY{p}{)}\PY{p}{,} \PY{n}{axis} \PY{o}{=} \PY{k+kc}{None}\PY{p}{)}
+             
+             \PY{k}{return} \PY{n}{coste}\PY{p}{,} \PY{n}{gradients}
+             
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}45}]:} \PY{n}{params} \PY{o}{=}  \PY{n}{np}\PY{o}{.}\PY{n}{concatenate}\PY{p}{(}\PY{p}{(}\PY{n}{theta1}\PY{p}{,} \PY{n}{theta2}\PY{p}{)}\PY{p}{,} \PY{n}{axis} \PY{o}{=} \PY{k+kc}{None}\PY{p}{)}
+         
+         \PY{c+c1}{\PYZsh{}print(backprop(params, 400, 25, 10, X, Y, 1))}
+         \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Diferencias al comprobar gradientes:}\PY{l+s+se}{\PYZbs{}n}\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{check}\PY{o}{.}\PY{n}{checkNNGradients}\PY{p}{(}\PY{n}{backprop}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Diferencias al comprobar gradientes:
+ [ 4.33315606e-11 -5.85087534e-13  5.24080779e-13  6.94293928e-12
+ -3.86019966e-11  8.55844562e-12 -7.97453770e-12 -3.25843796e-11
+ -5.90238414e-11  3.02491365e-11 -2.21222485e-11 -9.52720680e-11
+ -4.15551621e-11  9.12638021e-13 -2.03395634e-12 -1.80884266e-11
+  1.25427238e-11 -4.09060286e-12  6.03773281e-12  2.41384690e-11
+  5.28279642e-11  1.03140274e-11  6.16659501e-12  8.66137717e-12
+  9.34252675e-12  1.71084258e-11  6.32419117e-11  1.16325005e-11
+  1.02217609e-11  1.49442403e-11  1.12843068e-11  1.66834324e-11
+  7.14504289e-11  1.10622622e-11  8.72196759e-12  2.17894591e-11
+  8.18731194e-12  1.53632801e-11]
+
+    \end{Verbatim}
+
+    \#\#\# Inicialización aleatoria de thetas
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}46}]:} \PY{k}{def} \PY{n+nf}{weightInitialize}\PY{p}{(}\PY{n}{L\PYZus{}in}\PY{p}{,} \PY{n}{L\PYZus{}out}\PY{p}{)}\PY{p}{:}
+             \PY{n}{cini} \PY{o}{=} \PY{l+m+mf}{0.12}
+             \PY{n}{aux} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{random}\PY{o}{.}\PY{n}{uniform}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{n}{cini}\PY{p}{,} \PY{n}{cini}\PY{p}{,} \PY{n}{size} \PY{o}{=}\PY{p}{(}\PY{n}{L\PYZus{}in}\PY{p}{,} \PY{n}{L\PYZus{}out}\PY{p}{)}\PY{p}{)}
+             \PY{n}{aux} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{insert}\PY{p}{(}\PY{n}{aux}\PY{p}{,}\PY{l+m+mi}{0}\PY{p}{,}\PY{l+m+mi}{1}\PY{p}{,}\PY{n}{axis} \PY{o}{=} \PY{l+m+mi}{0}\PY{p}{)}
+             \PY{k}{return} \PY{n}{aux}
+\end{Verbatim}
+
+
+    \subsection{Prueba para la red
+Neuronal}\label{prueba-para-la-red-neuronal}
+
+Con esta función probaremos la red con matrices de pesos inicializadas
+aleatoriamente y comprobaremos su precisión después de ser optimizada
+con la función optimize.
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}63}]:} \PY{k}{def} \PY{n+nf}{NNTest} \PY{p}{(}\PY{n}{num\PYZus{}entradas}\PY{p}{,} \PY{n}{num\PYZus{}ocultas}\PY{p}{,} \PY{n}{num\PYZus{}etiquetas}\PY{p}{,} \PY{n}{reg}\PY{p}{,} \PY{n}{X}\PY{p}{,} \PY{n}{Y}\PY{p}{,} \PY{n}{laps}\PY{p}{)}\PY{p}{:}
+             \PY{n}{t1} \PY{o}{=} \PY{n}{weightInitialize}\PY{p}{(}\PY{n}{num\PYZus{}entradas}\PY{p}{,} \PY{n}{num\PYZus{}ocultas}\PY{p}{)}
+             \PY{n}{t2} \PY{o}{=} \PY{n}{weightInitialize}\PY{p}{(}\PY{n}{num\PYZus{}ocultas}\PY{p}{,} \PY{n}{num\PYZus{}etiquetas}\PY{p}{)}
+         
+             \PY{n}{params} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{hstack}\PY{p}{(}\PY{p}{(}\PY{n}{np}\PY{o}{.}\PY{n}{ravel}\PY{p}{(}\PY{n}{t1}\PY{p}{)}\PY{p}{,} \PY{n}{np}\PY{o}{.}\PY{n}{ravel}\PY{p}{(}\PY{n}{t2}\PY{p}{)}\PY{p}{)}\PY{p}{)}
+             \PY{n}{out} \PY{o}{=} \PY{n}{opt}\PY{o}{.}\PY{n}{minimize}\PY{p}{(}\PY{n}{fun} \PY{o}{=} \PY{n}{backprop}\PY{p}{,} \PY{n}{x0} \PY{o}{=} \PY{n}{params}\PY{p}{,} \PY{n}{args} \PY{o}{=} \PY{p}{(}\PY{n}{num\PYZus{}entradas}\PY{p}{,} \PY{n}{num\PYZus{}ocultas}\PY{p}{,} \PY{n}{num\PYZus{}etiquetas}\PY{p}{,} \PY{n}{X}\PY{p}{,} \PY{n}{Y}\PY{p}{,} \PY{n}{reg}\PY{p}{)}\PY{p}{,} \PY{n}{method}\PY{o}{=}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{TNC}\PY{l+s+s1}{\PYZsq{}}\PY{p}{,} \PY{n}{jac} \PY{o}{=} \PY{k+kc}{True}\PY{p}{,} \PY{n}{options} \PY{o}{=} \PY{p}{\PYZob{}}\PY{l+s+s1}{\PYZsq{}}\PY{l+s+s1}{maxiter}\PY{l+s+s1}{\PYZsq{}}\PY{p}{:} \PY{n}{laps}\PY{p}{\PYZcb{}}\PY{p}{)}
+         
+             \PY{n}{Thetas1} \PY{o}{=} \PY{n}{out}\PY{o}{.}\PY{n}{x}\PY{p}{[}\PY{p}{:}\PY{p}{(}\PY{n}{num\PYZus{}ocultas}\PY{o}{*}\PY{p}{(}\PY{n}{num\PYZus{}entradas}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}\PY{p}{]}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{n}{num\PYZus{}ocultas}\PY{p}{,}\PY{p}{(}\PY{n}{num\PYZus{}entradas}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+             \PY{n}{Thetas2} \PY{o}{=} \PY{n}{out}\PY{o}{.}\PY{n}{x}\PY{p}{[}\PY{p}{(}\PY{n}{num\PYZus{}ocultas}\PY{o}{*}\PY{p}{(}\PY{n}{num\PYZus{}entradas}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}\PY{p}{:}\PY{p}{]}\PY{o}{.}\PY{n}{reshape}\PY{p}{(}\PY{n}{num\PYZus{}etiquetas}\PY{p}{,}\PY{p}{(}\PY{n}{num\PYZus{}ocultas}\PY{o}{+}\PY{l+m+mi}{1}\PY{p}{)}\PY{p}{)}
+         
+             \PY{n+nb}{input} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{hstack}\PY{p}{(}\PY{p}{[}\PY{n}{np}\PY{o}{.}\PY{n}{ones}\PY{p}{(}\PY{p}{(}\PY{n+nb}{len}\PY{p}{(}\PY{n}{X}\PY{p}{)}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{)}\PY{p}{,} \PY{n}{dtype} \PY{o}{=} \PY{n}{np}\PY{o}{.}\PY{n}{float}\PY{p}{)}\PY{p}{,} \PY{n}{X}\PY{p}{]}\PY{p}{)}
+             \PY{n}{hipo} \PY{o}{=} \PY{n}{forwardProp}\PY{p}{(}\PY{n}{Thetas1}\PY{p}{,} \PY{n}{Thetas2}\PY{p}{,} \PY{n+nb}{input}\PY{p}{)}\PY{p}{[}\PY{l+m+mi}{3}\PY{p}{]}
+         
+         
+             \PY{n}{Ghipo} \PY{o}{=} \PY{p}{(}\PY{n}{hipo}\PY{o}{.}\PY{n}{argmax}\PY{p}{(}\PY{n}{axis} \PY{o}{=} \PY{l+m+mi}{0}\PY{p}{)}\PY{p}{)}\PY{o}{+}\PY{l+m+mi}{1}
+             \PY{n}{prec} \PY{o}{=} \PY{p}{(}\PY{n}{Ghipo} \PY{o}{==} \PY{n}{Y}\PY{p}{)}\PY{o}{*}\PY{l+m+mi}{1}
+             
+             \PY{n}{precision} \PY{o}{=} \PY{n+nb}{sum}\PY{p}{(}\PY{n}{prec}\PY{p}{)} \PY{o}{/} \PY{n+nb}{len}\PY{p}{(}\PY{n}{X}\PY{p}{)}
+         
+             \PY{n+nb}{print}\PY{p}{(}\PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{Program precision: }\PY{l+s+s2}{\PYZdq{}}\PY{p}{,} \PY{n}{precision} \PY{o}{*}\PY{l+m+mi}{100}\PY{p}{,} \PY{l+s+s2}{\PYZdq{}}\PY{l+s+s2}{\PYZpc{}}\PY{l+s+s2}{\PYZdq{}}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+{\color{incolor}In [{\color{incolor}67}]:} \PY{n}{NNTest}\PY{p}{(}\PY{l+m+mi}{400}\PY{p}{,} \PY{l+m+mi}{25}\PY{p}{,} \PY{l+m+mi}{10}\PY{p}{,} \PY{l+m+mi}{1}\PY{p}{,} \PY{n}{X}\PY{p}{,} \PY{n}{Y}\PY{p}{,} \PY{l+m+mi}{70}\PY{p}{)}
+\end{Verbatim}
+
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Program precision:  91.8 \%
+
+    \end{Verbatim}
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+    \end{document}
